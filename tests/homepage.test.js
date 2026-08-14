@@ -28,9 +28,10 @@ test('image placeholders describe the intended future photography', () => {
 });
 
 test('homepage hero uses the supplied Techs photograph', () => {
-  assert.match(html, /<img[^>]+class="hero-photo"[^>]+src="assets\/Techs\.jpg"[^>]+alt="Young sailors aboard a Tech sailboat on Lake Mendota"/);
-  assert.doesNotMatch(html, /class="image-placeholder hero-image"/);
-  assert.match(css, /\.hero-photo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
+  assert.match(html, /class="hero-image"[^>]+role="img"[^>]+aria-label="Young sailors aboard Tech sailboats on Lake Mendota"/);
+  assert.doesNotMatch(html, /class="hero-photo"/);
+  assert.match(css, /\.hero-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Techs\.jpg"\)[^}]*cover/s);
+  assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
 });
 
 test('stylesheet defines the approved palette and responsive safeguards', () => {
