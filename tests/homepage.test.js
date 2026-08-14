@@ -31,6 +31,7 @@ test('homepage hero uses the supplied Techs photograph', () => {
   assert.match(html, /class="hero-image"[^>]+role="img"[^>]+aria-label="Young sailors aboard Tech sailboats on Lake Mendota"/);
   assert.doesNotMatch(html, /class="hero-photo"/);
   assert.match(css, /\.hero-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Techs\.jpg"\)[^}]*cover/s);
+  assert.match(css, /\.hero-image::before\s*\{[^}]*background-position:\s*60%\s+center/s);
   assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
 });
 
