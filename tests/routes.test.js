@@ -62,4 +62,16 @@ test('faq page exposes searchable categorized disclosures and empty state', () =
   });
 });
 
+test('contact and account pages expose complete demo-form hooks', () => {
+  for (const file of [routes.contact, routes.login, routes.signup]) {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /data-demo-form/);
+    assert.match(html, /data-form-status[^>]*aria-live="polite"/);
+    assert.match(html, /This is a front-end demo/i);
+  }
+  assert.match(fs.readFileSync(routes.contact, 'utf8'), /name="message"/);
+  assert.match(fs.readFileSync(routes.login, 'utf8'), /name="password"/);
+  assert.match(fs.readFileSync(routes.signup, 'utf8'), /name="passwordConfirm"/);
+});
+
 module.exports = { routes };
