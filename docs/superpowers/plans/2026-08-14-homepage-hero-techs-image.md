@@ -4,7 +4,7 @@
 
 **Goal:** Replace the homepage hero placeholder with the supplied `assets/Techs.jpg` photograph while preserving the existing responsive frame and decorative composition.
 
-**Architecture:** Keep the current `.hero-image` element as the framed visual container and place a semantic `<img>` inside it. Add one focused descendant rule so the photograph fills and crops within the existing organic shape without affecting the remaining placeholders.
+**Architecture:** Keep the current `.hero-image` element as the framed visual container and place a semantic `<img>` inside it. Absolutely anchor the photograph to the container's four edges so its height resolves against the frame even though the frame uses `min-height`, then crop it with `object-fit: cover`.
 
 **Tech Stack:** Static HTML, CSS, Node.js built-in test runner
 
@@ -37,7 +37,7 @@ Replace the placeholder-only expectation with a focused hero photograph test:
 test('homepage hero uses the supplied Techs photograph', () => {
   assert.match(html, /<img[^>]+class="hero-photo"[^>]+src="assets\/Techs\.jpg"[^>]+alt="Young sailors aboard a Tech sailboat on Lake Mendota"/);
   assert.doesNotMatch(html, /class="image-placeholder hero-image"/);
-  assert.match(css, /\.hero-photo\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
+  assert.match(css, /\.hero-photo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
 });
 ```
 
@@ -45,7 +45,7 @@ test('homepage hero uses the supplied Techs photograph', () => {
 
 Run: `node --test tests/homepage.test.js`
 
-Expected: FAIL because the hero still contains the placeholder and no `.hero-photo` rule exists.
+Expected: FAIL because `.hero-photo` is not absolutely anchored to the frame, allowing its percentage height to remain unresolved.
 
 - [ ] **Step 3: Add the semantic photograph**
 
@@ -60,7 +60,7 @@ Replace the top placeholder markup in `index.html` with:
 Add this focused rule beside `.hero-image` in `styles.css`:
 
 ```css
-.hero-photo { width: 100%; height: 100%; object-fit: cover; }
+.hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 ```
 
 - [ ] **Step 4: Run verification**
