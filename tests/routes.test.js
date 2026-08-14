@@ -37,4 +37,29 @@ test('every route exposes complete primary navigation', () => {
   });
 });
 
+test('programs page covers all three offerings and family decision content', () => {
+  const html = fs.readFileSync(routes.programs, 'utf8');
+  ['Beginner', 'Advanced', 'Windsurfing', 'Ages 10–18', 'A typical session', 'Choose your program'].forEach((text) => {
+    assert.match(html, new RegExp(text, 'i'));
+  });
+});
+
+test('about page covers mission, safety, history, and instructor values', () => {
+  const html = fs.readFileSync(routes.about, 'utf8');
+  ['Our mission', 'How we teach', 'Safety', 'Since 1963', 'Patient', 'Prepared', 'Encouraging'].forEach((text) => {
+    assert.match(html, new RegExp(text, 'i'));
+  });
+});
+
+test('faq page exposes searchable categorized disclosures and empty state', () => {
+  const html = fs.readFileSync(routes.faq, 'utf8');
+  assert.match(html, /id="faq-search"/);
+  assert.match(html, /id="faq-results"[^>]*aria-live="polite"/);
+  assert.ok((html.match(/data-faq-item/g) || []).length >= 12);
+  assert.match(html, /id="faq-empty"[^>]*hidden/);
+  ['Eligibility', 'Safety', 'Weather', 'Equipment', 'Registration', 'Account'].forEach((text) => {
+    assert.match(html, new RegExp(text, 'i'));
+  });
+});
+
 module.exports = { routes };
