@@ -4,7 +4,7 @@
 
 **Goal:** Replace the homepage hero placeholder with the supplied `assets/Techs.jpg` photograph while preserving the existing responsive frame and decorative composition.
 
-**Architecture:** Keep the current `.hero-image` element as the framed visual container and place a semantic `<img>` inside it. Absolutely anchor the photograph to the container's four edges so its height resolves against the frame even though the frame uses `min-height`, then crop it with `object-fit: cover`.
+**Architecture:** Keep `.hero-image` as the semantic organic cutout and remove the nested `<img>`. Paint `assets/Techs.jpg` on an absolutely positioned `::before` layer extending 6% beyond every edge; the cutout's irregular border radius and hidden overflow mask that oversized layer.
 
 **Tech Stack:** Static HTML, CSS, Node.js built-in test runner
 
@@ -27,7 +27,7 @@
 
 **Interfaces:**
 - Consumes: The existing `.hero-image` framed container and `assets/Techs.jpg` image asset.
-- Produces: A semantic hero `<img>` with responsive cover cropping inside the existing frame.
+- Produces: An accessible masked cutout with an oversized background layer and responsive cover cropping.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -35,9 +35,10 @@ Replace the placeholder-only expectation with a focused hero photograph test:
 
 ```js
 test('homepage hero uses the supplied Techs photograph', () => {
-  assert.match(html, /<img[^>]+class="hero-photo"[^>]+src="assets\/Techs\.jpg"[^>]+alt="Young sailors aboard a Tech sailboat on Lake Mendota"/);
-  assert.doesNotMatch(html, /class="image-placeholder hero-image"/);
-  assert.match(css, /\.hero-photo\s*\{[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
+  assert.match(html, /class="hero-image"[^>]+role="img"[^>]+aria-label="Young sailors aboard Tech sailboats on Lake Mendota"/);
+  assert.doesNotMatch(html, /class="hero-photo"/);
+  assert.match(css, /\.hero-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Techs\.jpg"\)[^}]*cover/s);
+  assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
 });
 ```
 
@@ -45,22 +46,20 @@ test('homepage hero uses the supplied Techs photograph', () => {
 
 Run: `node --test tests/homepage.test.js`
 
-Expected: FAIL because `.hero-photo` is not absolutely anchored to the frame, allowing its percentage height to remain unresolved.
+Expected: FAIL because the nested `<img>` still exists and no oversized masked background layer is defined.
 
 - [ ] **Step 3: Add the semantic photograph**
 
-Replace the top placeholder markup in `index.html` with:
+Replace the nested image markup in `index.html` with:
 
 ```html
-<div class="hero-image">
-  <img class="hero-photo" src="assets/Techs.jpg" alt="Young sailors aboard a Tech sailboat on Lake Mendota">
-</div>
+<div class="hero-image" role="img" aria-label="Young sailors aboard Tech sailboats on Lake Mendota"></div>
 ```
 
-Add this focused rule beside `.hero-image` in `styles.css`:
+Replace `.hero-photo` with this focused layer beside `.hero-image` in `styles.css`:
 
 ```css
-.hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-image::before { content: ""; position: absolute; inset: -6%; background: url("assets/Techs.jpg") center / cover no-repeat; }
 ```
 
 - [ ] **Step 4: Run verification**
@@ -80,6 +79,10 @@ Expected: Exit code 0.
 Run: `git diff --check`
 
 Expected: Exit code 0 and no whitespace errors.
+
+Render the homepage in Chrome at `1440x1000` and `768x1200`.
+
+Expected: The photograph fills and is clipped by the complete organic cutout at both sizes, with no rectangular edge or empty interior area.
 
 - [ ] **Step 5: Commit the implementation**
 
