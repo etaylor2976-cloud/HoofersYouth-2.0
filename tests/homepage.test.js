@@ -22,7 +22,7 @@ test('homepage exposes accessible interactive hooks', () => {
 
 test('image placeholders describe the intended future photography', () => {
   const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
-  assert.ok(placeholders.length >= 4);
+  assert.ok(placeholders.length >= 3);
   assert.match(html, /role="img"/);
   assert.match(html, /aria-label="Placeholder for/);
 });
@@ -33,6 +33,13 @@ test('homepage hero uses the supplied Techs photograph', () => {
   assert.match(css, /\.hero-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Techs\.jpg"\)[^}]*cover/s);
   assert.match(css, /\.hero-image::before\s*\{[^}]*background-position:\s*60%\s+center/s);
   assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
+});
+
+test('confidence section uses the supplied Youth Sailing photograph', () => {
+  assert.match(html, /class="confidence-image"[^>]+role="img"[^>]+aria-label="Young sailors learning together around a sailboat"/);
+  assert.doesNotMatch(html, /class="image-placeholder confidence-image"/);
+  assert.match(css, /\.confidence-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Youth_Sailing1\.jpg"\)[^}]*cover/s);
+  assert.match(css, /\.confidence-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
 });
 
 test('stylesheet defines the approved palette and responsive safeguards', () => {
