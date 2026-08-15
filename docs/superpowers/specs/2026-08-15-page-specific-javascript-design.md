@@ -6,12 +6,18 @@ Replace the single site-wide `script.js` entry point with a small shared module 
 
 ## Architecture
 
-JavaScript will live in a root-level `js/` directory. Every page will load `js/common.js` first and then load its own page entry file. Nested routes will use `../js/...` paths, while the homepage will use `js/...` paths.
+JavaScript will live in a root-level `js/` directory. Every page will load `js/common.js` first and then load its own page entry file. Contact, Login, and Signup will load `forms-common.js` between those two scripts. Nested routes will use `../js/...` paths, while the homepage will use `js/...` paths.
 
 `common.js` owns only behavior used across the whole site:
 
 - Mobile navigation state and event wiring
 - Scroll-reveal animation initialization and reduced-motion fallback
+
+`forms-common.js` owns reusable, backend-agnostic form behavior:
+
+- Field and form validation
+- Password visibility state and control wiring
+- Demo form status rendering and first-invalid-field focus
 
 Each page entry owns its route-specific initialization:
 
@@ -19,9 +25,9 @@ Each page entry owns its route-specific initialization:
 - `about.js`: shared initialization only, with a dedicated location for future About-page behavior
 - `programs.js`: shared initialization only, with a dedicated location for future Programs-page behavior
 - `faq.js`: FAQ disclosures, search filtering, result count, and empty state
-- `contact.js`: contact-form validation and demo submission state
-- `login.js`: login-form validation, demo submission state, and password visibility
-- `signup.js`: signup-form validation, password matching, demo submission state, and password visibility
+- `contact.js`: contact-form submission initialization
+- `login.js`: login-form submission and password-control initialization
+- `signup.js`: signup-form submission and password-control initialization
 
 The existing root `script.js` will be removed after every HTML route and test has moved to the new files.
 
@@ -56,7 +62,7 @@ Optional DOM hooks will remain guarded. A missing navigation control, FAQ panel,
 
 ## Backend Readiness
 
-Login, signup, and contact submission logic will remain local to their page files. A future backend implementation can replace each page's demo submit handler without touching FAQ, navigation, animations, or unrelated routes. Shared validation may be extracted later if actual backend requirements make reuse valuable; it will not be generalized prematurely in this refactor.
+Login, signup, and contact submission initialization will remain local to their page files. A future backend implementation can replace each page's demo submit handler without touching validation, FAQ, navigation, animations, or unrelated routes. Backend-agnostic validation and password controls will be shared through `forms-common.js` to avoid duplicated logic.
 
 ## Testing
 

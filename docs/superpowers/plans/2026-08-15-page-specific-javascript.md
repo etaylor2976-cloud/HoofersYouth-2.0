@@ -4,7 +4,7 @@
 
 **Goal:** Split the monolithic root `script.js` into shared site behavior and one focused JavaScript entry file for each HTML route without changing existing behavior.
 
-**Architecture:** A browser/CommonJS-compatible `js/common.js` exposes mobile-navigation and reveal-animation helpers through `HoofersCommon` and `module.exports`. Each route loads `common.js` followed by exactly one page entry file, which initializes shared behavior and owns only that route's interactions.
+**Architecture:** A browser/CommonJS-compatible `js/common.js` exposes mobile-navigation and reveal-animation helpers through `HoofersCommon` and `module.exports`. A separate `js/forms-common.js` provides backend-agnostic validation and password helpers to form routes; each route still owns exactly one page entry file and its submission initialization.
 
 **Tech Stack:** HTML5, browser JavaScript, CommonJS compatibility for Node.js, Node built-in test runner (`node --test`)
 
@@ -15,7 +15,7 @@
 - Keep direct static-file browser use and the existing Node test runner working.
 - Missing optional DOM hooks must remain harmless no-ops.
 - Preserve the user's existing uncommitted `index.html` gallery-caption change.
-- Every route must load `js/common.js` first and then exactly its matching page entry file with `defer`.
+- Every route must load `js/common.js` first and then exactly its matching page entry file with `defer`; contact, login, and signup must load `js/forms-common.js` between them.
 - Remove the root `script.js` only after all routes and tests use the new files.
 
 ---
@@ -171,6 +171,7 @@ git commit -m "refactor: isolate home and faq javascript"
 ### Task 3: Contact and Account Entries
 
 **Files:**
+- Create: `js/forms-common.js`
 - Create: `js/contact.js`
 - Create: `js/login.js`
 - Create: `js/signup.js`
@@ -178,15 +179,17 @@ git commit -m "refactor: isolate home and faq javascript"
 
 **Interfaces:**
 - Consumes: `HoofersCommon.initCommon(documentRef, windowRef)` in browsers and `require('./common.js')` in Node.
-- Produces from `contact.js`: `validateField(field, form)`, `validateForm(form)`, `initContactForm(documentRef)`, and `initContact(documentRef, windowRef)`.
-- Produces from `login.js`: `setPasswordVisibility(input, button, visible)`, `validateField(field, form)`, `validateForm(form)`, `initPasswordToggles(documentRef)`, `initLoginForm(documentRef)`, and `initLogin(documentRef, windowRef)`.
-- Produces from `signup.js`: `setPasswordVisibility(input, button, visible)`, `validateField(field, form)`, `validateForm(form)`, `initPasswordToggles(documentRef)`, `initSignupForm(documentRef)`, and `initSignup(documentRef, windowRef)`.
+- Produces from `forms-common.js`: `validateField(field, form)`, `validateForm(form)`, `setPasswordVisibility(input, button, visible)`, `initPasswordToggles(documentRef)`, and `initDemoForm(form)`.
+- Produces from `contact.js`: `initContactForm(documentRef)` and `initContact(documentRef, windowRef)`.
+- Produces from `login.js`: `initLoginForm(documentRef)` and `initLogin(documentRef, windowRef)`.
+- Produces from `signup.js`: `initSignupForm(documentRef)` and `initSignup(documentRef, windowRef)`.
 
 - [ ] **Step 1: Write failing page-specific form tests**
 
-Change `tests/forms.test.js` to import each route's functions from its matching file. Test contact required/email validation through `contact.js`, login password visibility and demo submission through `login.js`, and signup password matching/terms validation through `signup.js`.
+Change `tests/forms.test.js` to import shared form helpers from `../js/forms-common.js` and each route initializer from its matching file. Test required/email/password-match/terms validation and password visibility through `forms-common.js`; test that contact, login, and signup initialize only their matching form.
 
 ```js
+const forms = require('../js/forms-common.js');
 const contact = require('../js/contact.js');
 const login = require('../js/login.js');
 const signup = require('../js/signup.js');
@@ -200,7 +203,7 @@ test('signup validation rejects mismatched passwords', () => {
     dataset: { match: 'password' },
     name: 'passwordConfirm'
   });
-  assert.equal(signup.validateField(confirm, form), 'Passwords must match.');
+  assert.equal(forms.validateField(confirm, form), 'Passwords must match.');
 });
 ```
 
@@ -208,32 +211,36 @@ test('signup validation rejects mismatched passwords', () => {
 
 Run: `node --test tests/forms.test.js`
 
-Expected: FAIL because the three page modules do not exist.
+Expected: FAIL because the shared forms module and three page modules do not exist.
 
-- [ ] **Step 3: Implement the contact entry**
+- [ ] **Step 3: Implement shared form behavior**
 
-Move the existing field/form validation behavior into `contact.js`. `initContactForm` must select only `[data-form-kind="contact"]`, prevent demo submission, show the existing success/error messages, and focus the first invalid field. `initContact` must call shared initialization and contact-form initialization.
+Move the existing field/form validation, password visibility, password-toggle wiring, demo status rendering, and first-invalid-field focus into `forms-common.js`. Attach its API as `globalThis.HoofersForms` in browsers and `module.exports` in Node. `initDemoForm(form)` accepts one form, attaches its submit listener, and preserves the current success/error behavior.
 
-- [ ] **Step 4: Implement the login entry**
+- [ ] **Step 4: Implement the contact entry**
 
-Move validation, password visibility, and form submission behavior into `login.js`. `initLoginForm` must select only `[data-form-kind="login"]`. Preserve the current password label and `aria-pressed` changes.
+`contact.js` resolves both shared APIs. `initContactForm` must select only `[data-form-kind="contact"]` and pass it to `forms.initDemoForm`. `initContact` must call shared site initialization and contact-form initialization.
 
-- [ ] **Step 5: Implement the signup entry**
+- [ ] **Step 5: Implement the login entry**
 
-Move validation, password visibility, password-match validation, terms validation, and form submission behavior into `signup.js`. `initSignupForm` must select only `[data-form-kind="signup"]`.
+`login.js` resolves both shared APIs. `initLoginForm` must select only `[data-form-kind="login"]`, pass it to `forms.initDemoForm`, and call `forms.initPasswordToggles(documentRef)`.
 
-Each of the three files must register its own `DOMContentLoaded` callback and export its named API through `module.exports`. Duplication of the small validation helpers is intentional so future backend submission logic is isolated by route.
+- [ ] **Step 6: Implement the signup entry**
 
-- [ ] **Step 6: Run the focused tests**
+`signup.js` resolves both shared APIs. `initSignupForm` must select only `[data-form-kind="signup"]`, pass it to `forms.initDemoForm`, and call `forms.initPasswordToggles(documentRef)`.
+
+Each page file must register its own `DOMContentLoaded` callback and export its named API through `module.exports`. Do not duplicate validation or password-toggle logic in page entries.
+
+- [ ] **Step 7: Run the focused tests**
 
 Run: `node --test tests/forms.test.js`
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit the form entries**
+- [ ] **Step 8: Commit the form entries**
 
 ```powershell
-git add -- js/contact.js js/login.js js/signup.js tests/forms.test.js
+git add -- js/forms-common.js js/contact.js js/login.js js/signup.js tests/forms.test.js
 git commit -m "refactor: isolate contact and account javascript"
 ```
 
@@ -260,7 +267,7 @@ git commit -m "refactor: isolate contact and account javascript"
 
 - [ ] **Step 1: Write the failing route-wiring test**
 
-Replace the old shared-script assertion in `tests/routes.test.js` with a route-to-entry mapping. For every route, assert that `common.js` occurs before its page entry, both carry `defer`, and the HTML does not reference root `script.js`.
+Replace the old shared-script assertion in `tests/routes.test.js` with a route-to-entry mapping. For every route, assert that `common.js` occurs before its page entry, both carry `defer`, and the HTML does not reference root `script.js`. For contact, login, and signup, also assert that deferred `forms-common.js` occurs between `common.js` and the page entry.
 
 ```js
 const entries = {
@@ -274,8 +281,14 @@ test('every route loads common javascript followed by its page entry', () => {
     const prefix = name === 'home' ? 'js/' : '../js/';
     const commonIndex = html.indexOf(`src="${prefix}common.js" defer`);
     const pageIndex = html.indexOf(`src="${prefix}${entries[name]}.js" defer`);
+    const formsIndex = html.indexOf(`src="${prefix}forms-common.js" defer`);
     assert.ok(commonIndex >= 0, `${file}: common.js`);
-    assert.ok(pageIndex > commonIndex, `${file}: ${entries[name]}.js after common.js`);
+    if (['contact', 'login', 'signup'].includes(name)) {
+      assert.ok(formsIndex > commonIndex && pageIndex > formsIndex, `${file}: form script order`);
+    } else {
+      assert.equal(formsIndex, -1, `${file}: no forms-common.js`);
+      assert.ok(pageIndex > commonIndex, `${file}: ${entries[name]}.js after common.js`);
+    }
     assert.doesNotMatch(html, /src="(?:\.\.\/)?script\.js"/);
   });
 });
@@ -293,7 +306,7 @@ Create `about.js` and `programs.js`. Each resolves `common.js`, defines and expo
 
 - [ ] **Step 4: Update all HTML script tags**
 
-On the homepage, replace the single script tag with deferred `js/common.js` then deferred `js/home.js`. On every nested page, replace it with deferred `../js/common.js` then deferred `../js/<route>.js`. Change no other HTML, including the user's gallery caption.
+On the homepage, replace the single script tag with deferred `js/common.js` then deferred `js/home.js`. On About, FAQ, and Programs, load deferred `../js/common.js` then the deferred page entry. On Contact, Login, and Signup, load deferred `../js/common.js`, deferred `../js/forms-common.js`, then the deferred page entry. Change no other HTML, including the user's gallery caption.
 
 - [ ] **Step 5: Remove the monolithic script**
 
