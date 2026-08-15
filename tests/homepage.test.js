@@ -22,7 +22,7 @@ test('homepage exposes accessible interactive hooks', () => {
 
 test('image placeholders describe the intended future photography', () => {
   const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
-  assert.ok(placeholders.length >= 3);
+  assert.ok(placeholders.length >= 2);
   assert.match(html, /role="img"/);
   assert.match(html, /aria-label="Placeholder for/);
 });
@@ -40,6 +40,15 @@ test('confidence section uses the supplied Youth Sailing photograph', () => {
   assert.doesNotMatch(html, /class="image-placeholder confidence-image"/);
   assert.match(css, /\.confidence-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Youth_Sailing1\.jpg"\)[^}]*cover/s);
   assert.match(css, /\.confidence-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
+});
+
+test('first gallery card uses the supplied Tong Family Marina photograph', () => {
+  assert.match(html, /class="gallery-image gallery-one"[^>]+role="img"[^>]+aria-label="The Tong Family Marina and Hoofer sailing fleet on Lake Mendota"/);
+  assert.doesNotMatch(html, /class="image-placeholder gallery-image gallery-one"/);
+  assert.match(html, /<small>The Tong Family Marina<\/small>Hoofer's has the second largest inland fleet\./);
+  assert.match(css, /\.gallery-one::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-4%[^}]*background:[^}]*url\("assets\/TFM-September-2019\.jpg"\)[^}]*cover/s);
+  assert.match(css, /\.gallery-one\s*\{[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
+  assert.match(css, /\.gallery-one \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
 });
 
 test('stylesheet defines the approved palette and responsive safeguards', () => {
