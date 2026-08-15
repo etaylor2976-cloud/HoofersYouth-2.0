@@ -111,8 +111,8 @@ section[id] { scroll-margin-top: 5.5rem; }
 .wave-lines { position: absolute; z-index: 4; left: 0; bottom: 3rem; width: 8rem; transform: rotate(-8deg); }
 .wave-lines i { display: block; height: .75rem; margin-top: .35rem; border-top: 3px solid var(--navy); border-radius: 50%; }
 
-.ticker { overflow: hidden; padding: 1rem 0; background: var(--navy); color: var(--white); font-family: var(--font-display); font-size: clamp(1rem, 1.7vw, 1.45rem); font-weight: 800; letter-spacing: -.03em; text-transform: uppercase; white-space: nowrap; transform: rotate(-1deg) scale(1.02); }
-.ticker div { width: max-content; }
+.ticker { position: relative; z-index: 2; display: flex; justify-content: center; overflow: hidden; margin-top: -1.5rem; padding: 1rem 0; background: var(--navy); color: var(--white); font-family: var(--font-display); font-size: clamp(1rem, 1.7vw, 1.45rem); font-weight: 800; letter-spacing: -.03em; text-transform: uppercase; white-space: nowrap; transform: rotate(-1deg) scale(1.02); }
+.ticker div { flex: none; width: max-content; }
 .ticker span { margin: 0 1.4rem; color: var(--sunny); }
 
 .section { padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 7vw, 7.5rem); }

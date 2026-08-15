@@ -45,10 +45,16 @@ test('confidence section uses the supplied Youth Sailing photograph', () => {
 test('first gallery card uses the supplied Tong Family Marina photograph', () => {
   assert.match(html, /class="gallery-image gallery-one"[^>]+role="img"[^>]+aria-label="The Tong Family Marina and Hoofer sailing fleet on Lake Mendota"/);
   assert.doesNotMatch(html, /class="image-placeholder gallery-image gallery-one"/);
-  assert.match(html, /<small>The Tong Family Marina<\/small>Hoofer's has the second largest inland fleet\./);
+  assert.match(html, /<small>The Tong Family Marina<\/small>[^<]+<\/span>/);
   assert.match(css, /\.gallery-one::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-4%[^}]*background:[^}]*url\("assets\/TFM-September-2019\.jpg"\)[^}]*cover/s);
   assert.match(css, /\.gallery-one\s*\{[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
   assert.match(css, /\.gallery-one \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
+});
+
+test('ticker centers its text and overlaps the hero seam', () => {
+  assert.match(css, /\.ticker\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2[^}]*display:\s*flex[^}]*justify-content:\s*center[^}]*margin-top:\s*-1\.5rem/s);
+  assert.match(css, /\.ticker div\s*\{[^}]*flex:\s*none[^}]*width:\s*max-content/s);
+  assert.match(css, /\.ticker\s*\{[^}]*transform:\s*rotate\(-1deg\)\s*scale\(1\.02\)/s);
 });
 
 test('stylesheet defines the approved palette and responsive safeguards', () => {
