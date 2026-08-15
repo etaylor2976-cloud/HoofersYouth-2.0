@@ -57,6 +57,12 @@ test('ticker centers its text and overlaps the hero seam', () => {
   assert.match(css, /\.ticker\s*\{[^}]*transform:\s*rotate\(-1deg\)\s*scale\(1\.02\)/s);
 });
 
+test('final CTA positions the yellow sail left of the mast', () => {
+  assert.match(css, /\.cta-sail::before\s*\{[^}]*left:\s*0/s);
+  assert.match(css, /\.cta-sail span\s*\{[^}]*right:\s*50%/s);
+  assert.match(css, /\.cta-sail::after\s*\{[^}]*right:\s*0[^}]*background:\s*var\(--coral\)/s);
+});
+
 test('stylesheet defines the approved palette and responsive safeguards', () => {
   for (const token of ['--navy', '--seafoam', '--coral', '--sunny']) {
     assert.match(css, new RegExp(token));

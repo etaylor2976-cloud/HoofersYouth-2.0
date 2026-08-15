@@ -194,6 +194,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .final-cta h2 { margin-bottom: 2.25rem; font-size: clamp(3.3rem, 7.3vw, 7.3rem); }
 .cta-sail { position: absolute; right: 11%; top: 18%; width: 7rem; height: 10rem; transform: rotate(12deg); }
 .cta-sail::before, .cta-sail::after { content: ""; position: absolute; bottom: 1rem; width: 3.2rem; height: 7.5rem; background: var(--sunny); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.cta-sail::before { left: 0; }
 .cta-sail::after { right: 0; transform: scaleX(-1); background: var(--coral); }
 .cta-sail span { position: absolute; z-index: 2; right: 50%; bottom: .9rem; width: 2px; height: 8.2rem; background: var(--white); }
 .cta-sail i { position: absolute; right: .2rem; bottom: 0; width: 7rem; height: 1.2rem; border-radius: 0 0 50% 50%; background: var(--navy); }
