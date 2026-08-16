@@ -18,13 +18,26 @@ test('all seven route documents exist', () => {
   });
 });
 
-test('nested pages load shared root assets and identify the active page', () => {
-  Object.entries(routes).filter(([name]) => name !== 'home').forEach(([name, file]) => {
+const entries = {
+  home: 'home', programs: 'programs', about: 'about', faq: 'faq',
+  contact: 'contact', login: 'login', signup: 'signup'
+};
+
+test('every route loads common javascript followed by its page entry', () => {
+  Object.entries(routes).forEach(([name, file]) => {
     const html = fs.readFileSync(file, 'utf8');
-    const label = name === 'signup' ? 'Sign up' : name[0].toUpperCase() + name.slice(1);
-    assert.match(html, /href="\.\.\/styles\.css"/);
-    assert.match(html, /src="\.\.\/script\.js"/);
-    assert.match(html, new RegExp(`aria-current="page"[^>]*>${label}<`, 'i'));
+    const prefix = name === 'home' ? 'js/' : '../js/';
+    const commonIndex = html.indexOf(`src="${prefix}common.js" defer`);
+    const pageIndex = html.indexOf(`src="${prefix}${entries[name]}.js" defer`);
+    const formsIndex = html.indexOf(`src="${prefix}forms-common.js" defer`);
+    assert.ok(commonIndex >= 0, `${file}: common.js`);
+    if (['contact', 'login', 'signup'].includes(name)) {
+      assert.ok(formsIndex > commonIndex && pageIndex > formsIndex, `${file}: form script order`);
+    } else {
+      assert.equal(formsIndex, -1, `${file}: no forms-common.js`);
+      assert.ok(pageIndex > commonIndex, `${file}: ${entries[name]}.js after common.js`);
+    }
+    assert.doesNotMatch(html, /src="(?:\.\.\/)?script\.js"/);
   });
 });
 
