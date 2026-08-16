@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { validateField, validateForm, setPasswordVisibility, initDemoForms } = require('../script.js');
+const forms = require('../js/forms-common.js');
+const contact = require('../js/contact.js');
+const login = require('../js/login.js');
+const signup = require('../js/signup.js');
 
 function field(overrides = {}) {
   return {
@@ -16,25 +19,25 @@ function field(overrides = {}) {
 }
 
 test('validateField reports required, email, password length, match, and consent errors', () => {
-  assert.equal(validateField(field()), 'This field is required.');
+  assert.equal(forms.validateField(field()), 'This field is required.');
   assert.equal(
-    validateField(field({ value: 'wrong', type: 'email', name: 'email' })),
+    forms.validateField(field({ value: 'wrong', type: 'email', name: 'email' })),
     'Enter a valid email address.'
   );
   assert.equal(
-    validateField(field({ value: 'short', type: 'password', minLength: 8, name: 'password' })),
+    forms.validateField(field({ value: 'short', type: 'password', minLength: 8, name: 'password' })),
     'Use at least 8 characters.'
   );
   const form = { elements: { password: field({ value: 'sailing88' }) } };
   assert.equal(
-    validateField(field({ value: 'different', dataset: { match: 'password' }, name: 'passwordConfirm' }), form),
+    forms.validateField(field({ value: 'different', dataset: { match: 'password' }, name: 'passwordConfirm' }), form),
     'Passwords must match.'
   );
   assert.equal(
-    validateField(field({ type: 'checkbox', checked: false, name: 'terms' })),
+    forms.validateField(field({ type: 'checkbox', checked: false, name: 'terms' })),
     'Please accept the terms to continue.'
   );
-  assert.equal(validateField(field({ value: 'Valid Name' })), '');
+  assert.equal(forms.validateField(field({ value: 'Valid Name' })), '');
 });
 
 test('setPasswordVisibility synchronizes input type and button state', () => {
@@ -45,12 +48,12 @@ test('setPasswordVisibility synchronizes input type and button state', () => {
     textContent: ''
   };
 
-  setPasswordVisibility(input, button, true);
+  forms.setPasswordVisibility(input, button, true);
   assert.equal(input.type, 'text');
   assert.equal(attrs.get('aria-pressed'), 'true');
   assert.equal(button.textContent, 'Hide password');
 
-  setPasswordVisibility(input, button, false);
+  forms.setPasswordVisibility(input, button, false);
   assert.equal(input.type, 'password');
   assert.equal(attrs.get('aria-pressed'), 'false');
   assert.equal(button.textContent, 'Show password');
@@ -69,7 +72,7 @@ test('validateForm writes errors and returns the first invalid field', () => {
     ownerDocument: { getElementById() { return error; } }
   };
 
-  const result = validateForm(form);
+  const result = forms.validateForm(form);
 
   assert.equal(result.valid, false);
   assert.equal(result.firstInvalid, invalid);
@@ -77,7 +80,7 @@ test('validateForm writes errors and returns the first invalid field', () => {
   assert.equal(attrs.get('aria-invalid'), 'true');
 });
 
-test('initDemoForms prevents submission and announces demo success', () => {
+test('initDemoForm prevents submission and announces demo success', () => {
   const listeners = new Map();
   const status = { textContent: '', classList: { remove() {}, add(value) { this.value = value; } } };
   const valid = field({
@@ -93,13 +96,39 @@ test('initDemoForms prevents submission and announces demo success', () => {
     querySelectorAll() { return [valid]; },
     addEventListener(name, handler) { listeners.set(name, handler); }
   };
-  const documentRef = { querySelectorAll() { return [form]; } };
   let prevented = false;
 
-  initDemoForms(documentRef);
+  forms.initDemoForm(form);
   listeners.get('submit')({ preventDefault() { prevented = true; } });
 
   assert.equal(prevented, true);
   assert.equal(status.textContent, 'Demo success.');
   assert.equal(status.classList.value, 'is-success');
+});
+
+test('route form initializers attach only their matching demo form', () => {
+  const listeners = new Map();
+  const form = {
+    addEventListener(name, handler) { listeners.set(name, handler); }
+  };
+  const calls = [];
+  const documentRef = {
+    querySelector(selector) {
+      calls.push(selector);
+      return selector === '[data-form-kind="signup"]' ? form : null;
+    },
+    querySelectorAll() { return []; },
+    getElementById() { return null; }
+  };
+
+  contact.initContactForm(documentRef);
+  login.initLoginForm(documentRef);
+  signup.initSignupForm(documentRef);
+
+  assert.deepEqual(calls, [
+    '[data-form-kind="contact"]',
+    '[data-form-kind="login"]',
+    '[data-form-kind="signup"]'
+  ]);
+  assert.equal(listeners.has('submit'), true);
 });
