@@ -1,3 +1,4 @@
+(() => {
 const common = typeof module !== 'undefined' ? require('./common.js') : globalThis.HoofersCommon;
 const forms = typeof module !== 'undefined' ? require('./forms-common.js') : globalThis.HoofersForms;
 
@@ -16,3 +17,4 @@ if (typeof document !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') module.exports = { initContactForm, initContact };
+})();

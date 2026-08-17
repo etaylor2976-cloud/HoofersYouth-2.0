@@ -1,3 +1,4 @@
+(() => {
 const common = typeof module !== 'undefined' && module.exports
   ? require('./common.js')
   : globalThis.HoofersCommon;
@@ -57,3 +58,4 @@ if (typeof document !== 'undefined') {
 
 const api = { setFaqState, initFaqDisclosures, filterFaqItems, initFaqFilter, initFaqPage };
 if (typeof module !== 'undefined') module.exports = api;
+})();

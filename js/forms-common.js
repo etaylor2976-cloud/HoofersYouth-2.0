@@ -1,3 +1,4 @@
+(() => {
 function setPasswordVisibility(input, button, visible) {
   input.type = visible ? 'text' : 'password';
   button.setAttribute('aria-pressed', String(visible));
@@ -76,3 +77,4 @@ function initDemoForm(form) {
 const api = { validateField, validateForm, setPasswordVisibility, initPasswordToggles, initDemoForm };
 if (typeof globalThis !== 'undefined') globalThis.HoofersForms = api;
 if (typeof module !== 'undefined') module.exports = api;
+})();

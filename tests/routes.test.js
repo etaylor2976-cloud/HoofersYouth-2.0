@@ -1,6 +1,8 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
 
 const routes = {
   home: 'index.html',
@@ -18,26 +20,60 @@ test('all seven route documents exist', () => {
   });
 });
 
-const entries = {
-  home: 'home', programs: 'programs', about: 'about', faq: 'faq',
-  contact: 'contact', login: 'login', signup: 'signup'
+const expectedScripts = {
+  home: ['js/common.js', 'js/home.js'],
+  programs: ['../js/common.js', '../js/programs.js'],
+  about: ['../js/common.js', '../js/about.js'],
+  faq: ['../js/common.js', '../js/faq.js'],
+  contact: ['../js/common.js', '../js/forms-common.js', '../js/contact.js'],
+  login: ['../js/common.js', '../js/forms-common.js', '../js/login.js'],
+  signup: ['../js/common.js', '../js/forms-common.js', '../js/signup.js']
 };
 
-test('every route loads common javascript followed by its page entry', () => {
+function routeScriptSources(file) {
+  const html = fs.readFileSync(file, 'utf8');
+  return [...html.matchAll(/<script\s+([^>]+)><\/script>/g)].map(([, attributes]) => {
+    assert.match(attributes, /\bdefer\b/, `${file}: deferred script`);
+    const source = attributes.match(/\bsrc="([^"]+)"/);
+    assert.ok(source, `${file}: script source`);
+    return source[1];
+  });
+}
+
+test('every route loads its exact deferred script list', () => {
   Object.entries(routes).forEach(([name, file]) => {
     const html = fs.readFileSync(file, 'utf8');
-    const prefix = name === 'home' ? 'js/' : '../js/';
-    const commonIndex = html.indexOf(`src="${prefix}common.js" defer`);
-    const pageIndex = html.indexOf(`src="${prefix}${entries[name]}.js" defer`);
-    const formsIndex = html.indexOf(`src="${prefix}forms-common.js" defer`);
-    assert.ok(commonIndex >= 0, `${file}: common.js`);
-    if (['contact', 'login', 'signup'].includes(name)) {
-      assert.ok(formsIndex > commonIndex && pageIndex > formsIndex, `${file}: form script order`);
-    } else {
-      assert.equal(formsIndex, -1, `${file}: no forms-common.js`);
-      assert.ok(pageIndex > commonIndex, `${file}: ${entries[name]}.js after common.js`);
-    }
+    assert.deepEqual(routeScriptSources(file), expectedScripts[name], `${file}: script order`);
     assert.doesNotMatch(html, /src="(?:\.\.\/)?script\.js"/);
+  });
+});
+
+test('each route runs its classic scripts in one shared global scope', () => {
+  Object.values(routes).forEach((file) => {
+    const context = vm.createContext({
+      document: { addEventListener() {} },
+      window: {}
+    });
+    routeScriptSources(file).forEach((source) => {
+      const scriptFile = path.resolve(path.dirname(file), source);
+      vm.runInContext(fs.readFileSync(scriptFile, 'utf8'), context, { filename: scriptFile });
+    });
+  });
+});
+
+test('nested pages load the shared root stylesheet', () => {
+  Object.values(routes).filter((file) => file !== routes.home).forEach((file) => {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /href="\.\.\/styles\.css"/);
+  });
+});
+
+test('every route identifies its active page', () => {
+  Object.entries(routes).forEach(([name, file]) => {
+    const html = fs.readFileSync(file, 'utf8');
+    const label = name === 'signup' ? 'Sign up' : name[0].toUpperCase() + name.slice(1);
+    assert.match(html, new RegExp(`aria-current="page"[^>]*>${label}<`, 'i'));
+    assert.equal((html.match(/aria-current="page"/g) || []).length, 1, `${file}: active page count`);
   });
 });
 

@@ -1,3 +1,4 @@
+(() => {
 function setMenuState(toggle, nav, expanded) {
   toggle.setAttribute('aria-expanded', String(expanded));
   nav.classList.toggle('is-open', expanded);
@@ -54,3 +55,4 @@ function initCommon(documentRef = document, windowRef = window) {
 const api = { setMenuState, initNavigation, initReveal, initCommon };
 if (typeof globalThis !== 'undefined') globalThis.HoofersCommon = api;
 if (typeof module !== 'undefined') module.exports = api;
+})();

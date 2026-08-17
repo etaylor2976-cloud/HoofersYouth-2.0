@@ -1,3 +1,4 @@
+(() => {
 const common = typeof module !== 'undefined' && module.exports
   ? require('./common.js')
   : globalThis.HoofersCommon;
@@ -11,3 +12,4 @@ if (typeof document !== 'undefined') {
 }
 
 if (typeof module !== 'undefined') module.exports = { initAbout };
+})();
