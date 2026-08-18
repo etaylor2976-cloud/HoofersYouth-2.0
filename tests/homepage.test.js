@@ -22,7 +22,7 @@ test('homepage exposes accessible interactive hooks', () => {
 
 test('image placeholders describe the intended future photography', () => {
   const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
-  assert.ok(placeholders.length >= 2);
+  assert.ok(placeholders.length >= 1);
   assert.match(html, /role="img"/);
   assert.match(html, /aria-label="Placeholder for/);
 });
@@ -49,6 +49,16 @@ test('first gallery card uses the supplied Tong Family Marina photograph', () =>
   assert.match(css, /\.gallery-one::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-4%[^}]*background:[^}]*url\("assets\/TFM-September-2019\.jpg"\)[^}]*cover/s);
   assert.match(css, /\.gallery-one\s*\{[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
   assert.match(css, /\.gallery-one \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
+});
+
+test('second gallery card uses the supplied keelboat photograph', () => {
+  assert.match(html, /class="gallery-image gallery-two"[^>]+role="img"[^>]+aria-label="Youth sailors aboard a keelboat at sunset on Lake Mendota"/);
+  assert.doesNotMatch(html, /class="image-placeholder gallery-image gallery-two"/);
+  assert.match(html, /<small>Photo placeholder<\/small>Finding your crew<\/span>/);
+  assert.match(css, /\.gallery-two::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*url\("assets\/keelboat\.jpg"\)[^}]*center\s*\/\s*cover/s);
+  assert.match(css, /\.gallery-two::after\s*\{[^}]*content:\s*""[^}]*linear-gradient\([^}]*transparent[^}]*rgba\(0,0,0,\.24\)/s);
+  assert.match(css, /\.gallery-two\s*\{[^}]*position:\s*relative[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
+  assert.match(css, /\.gallery-two \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
 });
 
 test('ticker centers its text and overlaps the hero seam', () => {

@@ -159,7 +159,10 @@ section[id] { scroll-margin-top: 5.5rem; }
 .gallery-one { position: relative; display: flex; grid-row: 1 / 3; overflow: hidden; border-radius: 2.5rem 8rem 2.5rem 2.5rem; background-color: #81c6cf; isolation: isolate; }
 .gallery-one::before { content: ""; position: absolute; z-index: -1; inset: -4%; background: url("assets/TFM-September-2019.jpg") center / cover no-repeat; }
 .gallery-one .placeholder-label { position: relative; z-index: 1; }
-.gallery-two { border-radius: 6rem 2.5rem 2.5rem 2.5rem; background-color: var(--sunny); }
+.gallery-two { position: relative; display: flex; overflow: hidden; border-radius: 6rem 2.5rem 2.5rem 2.5rem; background-color: var(--sunny); isolation: isolate; }
+.gallery-two::before { content: ""; position: absolute; z-index: -2; inset: 0; background: url("assets/keelboat.jpg") center / cover no-repeat; }
+.gallery-two::after { content: ""; position: absolute; z-index: -1; inset: 45% 0 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.24)); }
+.gallery-two .placeholder-label { position: relative; z-index: 1; }
 .gallery-three { border-radius: 2.5rem 2.5rem 6rem 2.5rem; background-color: #efa18f; }
 
 .testimonial { position: relative; overflow: hidden; background: var(--coral); color: var(--white); text-align: center; }
