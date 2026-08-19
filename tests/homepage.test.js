@@ -121,10 +121,12 @@ test('ticker centers its text and overlaps the hero seam', () => {
   assert.match(css, /\.ticker\s*\{[^}]*transform:\s*rotate\(-1deg\)\s*scale\(1\.02\)/s);
 });
 
-test('final CTA positions the yellow sail left of the mast', () => {
-  assert.match(css, /\.cta-sail::before\s*\{[^}]*left:\s*0/s);
-  assert.match(css, /\.cta-sail span\s*\{[^}]*right:\s*50%/s);
-  assert.match(css, /\.cta-sail::after\s*\{[^}]*right:\s*0[^}]*background:\s*var\(--coral\)/s);
+test('homepage omits the testimonial and final crew CTA sections', () => {
+  assert.doesNotMatch(html, /class="[^"]*testimonial/);
+  assert.doesNotMatch(html, /Parent testimonial|Ready to find|The lake is calling/i);
+  for (const selector of ['.testimonial', '.quote-mark', '.final-cta', '.cta-sail']) {
+    assert.doesNotMatch(css, new RegExp(selector.replace('.', '\\.')));
+  }
 });
 
 test('stylesheet defines the approved palette and responsive safeguards', () => {
