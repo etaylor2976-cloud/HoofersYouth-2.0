@@ -132,8 +132,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-card:hover { transform: translateY(-.55rem) rotate(-.4deg); box-shadow: var(--shadow); }
 .program-card::after { content: ""; position: absolute; right: -2.4rem; bottom: -2.4rem; width: 8rem; height: 8rem; border: 1px solid currentColor; border-radius: 50%; opacity: .16; box-shadow: 0 0 0 1.25rem transparent, 0 0 0 1.35rem currentColor; }
 .program-discover { background: var(--seafoam); color: var(--navy); }
-.program-develop { background: var(--sunny); color: var(--navy); transform: translateY(2rem); }
-.program-develop:hover { transform: translateY(1.45rem) rotate(.4deg); }
+.program-develop { background: var(--sunny); color: var(--navy); }
 .program-lead { background: var(--navy); color: var(--white); }
 .program-number { position: absolute; top: 2rem; right: 2rem; opacity: .55; font-size: .7rem; font-weight: 800; letter-spacing: .12em; }
 .program-icon { display: grid; width: 4.4rem; height: 4.4rem; margin-bottom: 4rem; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: 2rem; }
@@ -252,8 +251,6 @@ section[id] { scroll-margin-top: 5.5rem; }
   .program-tab-list button { min-width: 0; padding-inline: .75rem; }
   .program-grid { grid-template-columns: 1fr; }
   .program-card { min-height: 25rem; }
-  .program-develop { transform: none; }
-  .program-develop:hover { transform: translateY(-.55rem); }
   .confidence { grid-template-columns: 1fr; gap: 4rem; }
   .confidence-visual { min-height: 30rem; }
   .confidence-note { right: -.4rem; }

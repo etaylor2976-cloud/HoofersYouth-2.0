@@ -51,6 +51,14 @@ test('programs section presents course selections in three accessible tabs', () 
   assert.doesNotMatch(programs, /Ages 10-18/);
 });
 
+test('program cards share one level resting position', () => {
+  const yellowCardRule = css.match(/\.program-develop\s*\{[^}]*\}/)?.[0] || '';
+
+  assert.doesNotMatch(yellowCardRule, /transform\s*:/);
+  assert.doesNotMatch(css, /\.program-develop:hover\s*\{/);
+  assert.match(css, /\.program-card:hover\s*\{[^}]*translateY\(-\.55rem\)/);
+});
+
 test('stylesheet no longer contains deleted page-only components', () => {
   for (const selector of ['.nav-login', '.auth-page', '.interior-hero', '.program-detail', '.faq-search-card']) {
     assert.doesNotMatch(css, new RegExp(selector.replace('.', '\\.')));
