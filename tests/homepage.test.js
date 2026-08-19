@@ -24,10 +24,27 @@ test('homepage keeps Programs and FAQ as sections without deleted page links', (
   assert.match(html, /href="#programs"[^>]*>Explore programs/);
   assert.match(html, /href="#programs"[^>]*>Programs</);
   assert.match(html, /href="#faq"[^>]*>FAQ</);
-  assert.equal((html.match(/data-camp-signup/g) || []).length, 4);
-  assert.equal((html.match(/>Sign up for camp\s*</g) || []).length, 3);
+  assert.equal((html.match(/data-camp-signup/g) || []).length, 9);
+  assert.equal((html.match(/>Sign up for camp\s*</g) || []).length, 8);
   assert.doesNotMatch(html, /See all frequently asked questions/i);
   assert.doesNotMatch(html, /href="(?:programs|about|faq|login|signup)\//i);
+});
+
+test('programs section presents morning, afternoon, and full-day course selections', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+
+  assert.match(programs, /<h3>Morning Courses<\/h3>/);
+  assert.match(programs, /<h3>Afternoon Courses<\/h3>/);
+  assert.match(programs, /<h3>Full-Day Courses<\/h3>/);
+  assert.equal((programs.match(/<h4>Sailing 1<\/h4>/g) || []).length, 2);
+  assert.equal((programs.match(/<h4>Sailing 2<\/h4>/g) || []).length, 2);
+  assert.equal((programs.match(/<h4>Windsurfing<\/h4>/g) || []).length, 2);
+  assert.match(programs, /<h4>Beginner Daycamp<\/h4>/);
+  assert.match(programs, /<h4>Advanced Daycamp<\/h4>/);
+  assert.equal((programs.match(/Ages 10–17/g) || []).length, 3);
+  assert.equal((programs.match(/2 weeks/g) || []).length, 2);
+  assert.equal((programs.match(/1 week/g) || []).length, 1);
+  assert.doesNotMatch(programs, /Ages 10-18/);
 });
 
 test('stylesheet no longer contains deleted page-only components', () => {
