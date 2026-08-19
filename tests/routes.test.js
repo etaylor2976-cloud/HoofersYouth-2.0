@@ -79,6 +79,18 @@ test('remaining routes expose only valid primary navigation', () => {
   }
 });
 
+test('remaining routes show the current linked street address', () => {
+  const address = '800 Langdon St, Madison, WI 53706';
+  const mapUrl = 'https://www.bing.com/maps?q=800%20Langdon%20St%2C%20Madison%2C%20WI%2053706';
+  const escapedMapUrl = mapUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  Object.values(routes).forEach((file) => {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, new RegExp(`href="${escapedMapUrl}"[^>]*>${address}<`), file);
+    assert.doesNotMatch(html, /Lake Mendota · Madison, Wisconsin/, file);
+  });
+});
+
 test('active source has no deleted route references', () => {
   const sourceFiles = [
     'index.html',
