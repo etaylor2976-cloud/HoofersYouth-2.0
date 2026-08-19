@@ -1,6 +1,12 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { setMenuState, initNavigation, initReveal } = require('../js/common.js');
+const {
+  CAMP_SIGNUP_MESSAGE,
+  setMenuState,
+  initNavigation,
+  initReveal,
+  initCampSignup
+} = require('../js/common.js');
 
 test('setMenuState synchronizes mobile navigation state', () => {
   const attrs = new Map();
@@ -44,4 +50,22 @@ test('initReveal reveals immediately for reduced motion', () => {
   const windowRef = { matchMedia() { return { matches: true }; } };
   initReveal(documentRef, windowRef);
   assert.equal(item.classList.value, 'is-visible');
+});
+
+test('initCampSignup alerts the approved message from every signup action', () => {
+  const listeners = [];
+  const buttons = [
+    { addEventListener(name, handler) { listeners.push([name, handler]); } },
+    { addEventListener(name, handler) { listeners.push([name, handler]); } }
+  ];
+  const alerts = [];
+  const documentRef = {
+    querySelectorAll(selector) { return selector === '[data-camp-signup]' ? buttons : []; }
+  };
+
+  initCampSignup(documentRef, { alert(message) { alerts.push(message); } });
+  listeners.forEach(([, handler]) => handler());
+
+  assert.deepEqual(alerts, [CAMP_SIGNUP_MESSAGE, CAMP_SIGNUP_MESSAGE]);
+  assert.equal(CAMP_SIGNUP_MESSAGE, 'You’re signed up for camp! We’ll be in touch with next steps.');
 });

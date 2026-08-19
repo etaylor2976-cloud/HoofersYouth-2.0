@@ -20,6 +20,22 @@ test('homepage exposes accessible interactive hooks', () => {
   assert.match(html, /aria-controls=/);
 });
 
+test('homepage keeps Programs and FAQ as sections without deleted page links', () => {
+  assert.match(html, /href="#programs"[^>]*>Explore programs/);
+  assert.match(html, /href="#programs"[^>]*>Programs</);
+  assert.match(html, /href="#faq"[^>]*>FAQ</);
+  assert.equal((html.match(/data-camp-signup/g) || []).length, 4);
+  assert.equal((html.match(/>Sign up for camp\s*</g) || []).length, 3);
+  assert.doesNotMatch(html, /See all frequently asked questions/i);
+  assert.doesNotMatch(html, /href="(?:programs|about|faq|login|signup)\//i);
+});
+
+test('stylesheet no longer contains deleted page-only components', () => {
+  for (const selector of ['.nav-login', '.auth-page', '.interior-hero', '.program-detail', '.faq-search-card']) {
+    assert.doesNotMatch(css, new RegExp(selector.replace('.', '\\.')));
+  }
+});
+
 test('homepage photography uses accessible real-image cards', () => {
   const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
   assert.equal(placeholders.length, 0);

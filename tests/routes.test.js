@@ -6,28 +6,12 @@ const vm = require('node:vm');
 
 const routes = {
   home: 'index.html',
-  programs: 'programs/index.html',
-  about: 'about/index.html',
-  faq: 'faq/index.html',
-  contact: 'contact/index.html',
-  login: 'login/index.html',
-  signup: 'signup/index.html'
+  contact: 'contact/index.html'
 };
-
-test('all seven route documents exist', () => {
-  Object.values(routes).forEach((file) => {
-    assert.equal(fs.existsSync(file), true, file);
-  });
-});
-
+const removedRouteNames = ['programs', 'about', 'faq', 'login', 'signup'];
 const expectedScripts = {
   home: ['js/common.js', 'js/home.js'],
-  programs: ['../js/common.js', '../js/programs.js'],
-  about: ['../js/common.js', '../js/about.js'],
-  faq: ['../js/common.js', '../js/faq.js'],
-  contact: ['../js/common.js', '../js/forms-common.js', '../js/contact.js'],
-  login: ['../js/common.js', '../js/forms-common.js', '../js/login.js'],
-  signup: ['../js/common.js', '../js/forms-common.js', '../js/signup.js']
+  contact: ['../js/common.js', '../js/forms-common.js', '../js/contact.js']
 };
 
 function routeScriptSources(file) {
@@ -40,7 +24,15 @@ function routeScriptSources(file) {
   });
 }
 
-test('every route loads its exact deferred script list', () => {
+test('only Home and Contact route documents remain', () => {
+  Object.values(routes).forEach((file) => assert.equal(fs.existsSync(file), true, file));
+  removedRouteNames.forEach((name) => {
+    const file = path.join(name, 'index.html');
+    assert.equal(fs.existsSync(file), false, file);
+  });
+});
+
+test('remaining routes load their exact deferred script lists', () => {
   Object.entries(routes).forEach(([name, file]) => {
     const html = fs.readFileSync(file, 'utf8');
     assert.deepEqual(routeScriptSources(file), expectedScripts[name], `${file}: script order`);
@@ -48,12 +40,9 @@ test('every route loads its exact deferred script list', () => {
   });
 });
 
-test('each route runs its classic scripts in one shared global scope', () => {
+test('remaining routes run classic scripts in one shared global scope', () => {
   Object.values(routes).forEach((file) => {
-    const context = vm.createContext({
-      document: { addEventListener() {} },
-      window: {}
-    });
+    const context = vm.createContext({ document: { addEventListener() {} }, window: {} });
     routeScriptSources(file).forEach((source) => {
       const scriptFile = path.resolve(path.dirname(file), source);
       vm.runInContext(fs.readFileSync(scriptFile, 'utf8'), context, { filename: scriptFile });
@@ -61,66 +50,56 @@ test('each route runs its classic scripts in one shared global scope', () => {
   });
 });
 
-test('nested pages load the shared root stylesheet', () => {
-  Object.values(routes).filter((file) => file !== routes.home).forEach((file) => {
-    const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /href="\.\.\/styles\.css"/);
-  });
+test('Contact loads the shared root stylesheet', () => {
+  assert.match(fs.readFileSync(routes.contact, 'utf8'), /href="\.\.\/styles\.css"/);
 });
 
-test('every route identifies its active page', () => {
+test('remaining routes identify their active page', () => {
   Object.entries(routes).forEach(([name, file]) => {
     const html = fs.readFileSync(file, 'utf8');
-    const label = name === 'signup' ? 'Sign up' : name[0].toUpperCase() + name.slice(1);
+    const label = name[0].toUpperCase() + name.slice(1);
     assert.match(html, new RegExp(`aria-current="page"[^>]*>${label}<`, 'i'));
     assert.equal((html.match(/aria-current="page"/g) || []).length, 1, `${file}: active page count`);
   });
 });
 
-test('every route exposes complete primary navigation', () => {
-  Object.values(routes).forEach((file) => {
-    const html = fs.readFileSync(file, 'utf8');
-    ['Home', 'Programs', 'About', 'FAQ', 'Contact', 'Login', 'Sign up'].forEach((label) => {
-      assert.match(html, new RegExp(`>${label}<`, 'i'), `${file}: ${label}`);
-    });
-  });
-});
-
-test('programs page covers all three offerings and family decision content', () => {
-  const html = fs.readFileSync(routes.programs, 'utf8');
-  ['Beginner', 'Advanced', 'Windsurfing', 'Ages 10–18', 'A typical session', 'Choose your program'].forEach((text) => {
-    assert.match(html, new RegExp(text, 'i'));
-  });
-});
-
-test('about page covers mission, safety, history, and instructor values', () => {
-  const html = fs.readFileSync(routes.about, 'utf8');
-  ['Our mission', 'How we teach', 'Safety', 'Since 1963', 'Patient', 'Prepared', 'Encouraging'].forEach((text) => {
-    assert.match(html, new RegExp(text, 'i'));
-  });
-});
-
-test('faq page exposes searchable categorized disclosures and empty state', () => {
-  const html = fs.readFileSync(routes.faq, 'utf8');
-  assert.match(html, /id="faq-search"/);
-  assert.match(html, /id="faq-results"[^>]*aria-live="polite"/);
-  assert.ok((html.match(/data-faq-item/g) || []).length >= 12);
-  assert.match(html, /id="faq-empty"[^>]*hidden/);
-  ['Eligibility', 'Safety', 'Weather', 'Equipment', 'Registration', 'Account'].forEach((text) => {
-    assert.match(html, new RegExp(text, 'i'));
-  });
-});
-
-test('contact and account pages expose complete demo-form hooks', () => {
-  for (const file of [routes.contact, routes.login, routes.signup]) {
-    const html = fs.readFileSync(file, 'utf8');
-    assert.match(html, /data-demo-form/);
-    assert.match(html, /data-form-status[^>]*aria-live="polite"/);
-    assert.match(html, /This is a front-end demo/i);
+test('remaining routes expose only valid primary navigation', () => {
+  const home = fs.readFileSync(routes.home, 'utf8');
+  const contact = fs.readFileSync(routes.contact, 'utf8');
+  assert.match(home, /href="#programs"[^>]*>Programs</);
+  assert.match(home, /href="#faq"[^>]*>FAQ</);
+  assert.match(home, /href="contact\/"[^>]*>Contact</);
+  assert.match(contact, /href="\.\.\/#programs"[^>]*>Programs</);
+  assert.match(contact, /href="\.\.\/#faq"[^>]*>FAQ</);
+  assert.match(contact, /href="\.\.\/contact\/"[^>]*aria-current="page"[^>]*>Contact</);
+  for (const html of [home, contact]) {
+    assert.doesNotMatch(html, />About</i);
+    assert.doesNotMatch(html, />Login</i);
+    assert.match(html, /data-camp-signup/);
   }
-  assert.match(fs.readFileSync(routes.contact, 'utf8'), /name="message"/);
-  assert.match(fs.readFileSync(routes.login, 'utf8'), /name="password"/);
-  assert.match(fs.readFileSync(routes.signup, 'utf8'), /name="passwordConfirm"/);
+});
+
+test('active source has no deleted route references', () => {
+  const sourceFiles = [
+    'index.html',
+    'contact/index.html',
+    'js/common.js',
+    'js/home.js',
+    'js/forms-common.js',
+    'js/contact.js',
+    'styles.css'
+  ];
+  const deletedPath = /(?:\.\.\/)?(?:programs|about|faq|login|signup)\//i;
+  sourceFiles.forEach((file) => assert.doesNotMatch(fs.readFileSync(file, 'utf8'), deletedPath, file));
+});
+
+test('Contact remains a frontend-only demo form', () => {
+  const html = fs.readFileSync(routes.contact, 'utf8');
+  assert.match(html, /data-demo-form/);
+  assert.match(html, /data-form-status[^>]*aria-live="polite"/);
+  assert.match(html, /This is a front-end demo/i);
+  assert.match(html, /name="message"/);
+  assert.doesNotMatch(html, /Account preview/i);
 });
 
 module.exports = { routes };

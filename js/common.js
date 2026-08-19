@@ -1,4 +1,6 @@
 (() => {
+const CAMP_SIGNUP_MESSAGE = 'You’re signed up for camp! We’ll be in touch with next steps.';
+
 function setMenuState(toggle, nav, expanded) {
   toggle.setAttribute('aria-expanded', String(expanded));
   nav.classList.toggle('is-open', expanded);
@@ -14,7 +16,7 @@ function initNavigation(documentRef) {
     setMenuState(toggle, nav, expanded);
   });
 
-  nav.querySelectorAll('a').forEach((link) => {
+  nav.querySelectorAll('a, button[data-camp-signup]').forEach((link) => {
     link.addEventListener('click', () => setMenuState(toggle, nav, false));
   });
 
@@ -23,6 +25,12 @@ function initNavigation(documentRef) {
       setMenuState(toggle, nav, false);
       if (typeof toggle.focus === 'function') toggle.focus();
     }
+  });
+}
+
+function initCampSignup(documentRef, windowRef) {
+  documentRef.querySelectorAll('[data-camp-signup]').forEach((button) => {
+    button.addEventListener('click', () => windowRef.alert(CAMP_SIGNUP_MESSAGE));
   });
 }
 
@@ -50,9 +58,10 @@ function initReveal(documentRef, windowRef) {
 function initCommon(documentRef = document, windowRef = window) {
   initNavigation(documentRef);
   initReveal(documentRef, windowRef);
+  initCampSignup(documentRef, windowRef);
 }
 
-const api = { setMenuState, initNavigation, initReveal, initCommon };
+const api = { CAMP_SIGNUP_MESSAGE, setMenuState, initNavigation, initReveal, initCampSignup, initCommon };
 if (typeof globalThis !== 'undefined') globalThis.HoofersCommon = api;
 if (typeof module !== 'undefined') module.exports = api;
 })();
