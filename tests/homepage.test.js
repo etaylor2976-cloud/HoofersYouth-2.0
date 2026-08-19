@@ -30,20 +30,24 @@ test('homepage keeps Programs and FAQ as sections without deleted page links', (
   assert.doesNotMatch(html, /href="(?:programs|about|faq|login|signup)\//i);
 });
 
-test('programs section presents morning, afternoon, and full-day course selections', () => {
+test('programs section presents course selections in three accessible tabs', () => {
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.match(programs, /<h3>Morning Courses<\/h3>/);
-  assert.match(programs, /<h3>Afternoon Courses<\/h3>/);
-  assert.match(programs, /<h3>Full-Day Courses<\/h3>/);
-  assert.equal((programs.match(/<h4>Sailing 1<\/h4>/g) || []).length, 2);
-  assert.equal((programs.match(/<h4>Sailing 2<\/h4>/g) || []).length, 2);
-  assert.equal((programs.match(/<h4>Windsurfing<\/h4>/g) || []).length, 2);
-  assert.match(programs, /<h4>Beginner Daycamp<\/h4>/);
-  assert.match(programs, /<h4>Advanced Daycamp<\/h4>/);
-  assert.equal((programs.match(/Ages 10–17/g) || []).length, 3);
-  assert.equal((programs.match(/2 weeks/g) || []).length, 2);
-  assert.equal((programs.match(/1 week/g) || []).length, 1);
+  assert.match(programs, /role="tablist"[^>]+aria-label="Course schedule"/);
+  assert.match(programs, /id="morning-tab"[^>]+role="tab"[^>]+aria-selected="true"[^>]+aria-controls="morning-courses"[^>]*>Morning</);
+  assert.match(programs, /id="afternoon-tab"[^>]+role="tab"[^>]+aria-selected="false"[^>]+aria-controls="afternoon-courses"[^>]*>Afternoon</);
+  assert.match(programs, /id="day-camp-tab"[^>]+role="tab"[^>]+aria-selected="false"[^>]+aria-controls="day-camp-courses"[^>]*>Day Camp</);
+  assert.match(programs, /id="morning-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="morning-tab"/);
+  assert.match(programs, /id="afternoon-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="afternoon-tab"[^>]+hidden/);
+  assert.match(programs, /id="day-camp-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="day-camp-tab"[^>]+hidden/);
+  assert.equal((programs.match(/<h3>Sailing 1<\/h3>/g) || []).length, 2);
+  assert.equal((programs.match(/<h3>Sailing 2<\/h3>/g) || []).length, 2);
+  assert.equal((programs.match(/<h3>Windsurfing<\/h3>/g) || []).length, 2);
+  assert.match(programs, /<h3>Beginner Daycamp<\/h3>/);
+  assert.match(programs, /<h3>Advanced Daycamp<\/h3>/);
+  assert.equal((programs.match(/Ages 10–17 · 2 weeks/g) || []).length, 6);
+  assert.equal((programs.match(/Ages 10–17 · 1 week/g) || []).length, 2);
+  assert.equal((programs.match(/class="program-card /g) || []).length, 8);
   assert.doesNotMatch(programs, /Ages 10-18/);
 });
 

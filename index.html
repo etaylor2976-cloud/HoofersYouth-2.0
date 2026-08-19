@@ -65,33 +65,75 @@
         <div><p class="eyebrow">Pick your adventure</p><h2 id="programs-title">Choose the course that fits your summer.</h2></div>
         <p>Every course welcomes sailors ages 10–17, with morning, afternoon, and full-day options built for time on the water.</p>
       </div>
-      <div class="program-grid">
-        <article class="program-card program-discover" data-reveal>
-          <div class="program-number">01</div><div class="program-icon" aria-hidden="true">☀</div>
-          <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Morning Courses</h3>
-          <ul class="course-list">
-            <li><h4>Sailing 1</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-            <li><h4>Sailing 2</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-            <li><h4>Windsurfing</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-          </ul>
-        </article>
-        <article class="program-card program-develop" data-reveal>
-          <div class="program-number">02</div><div class="program-icon" aria-hidden="true">◒</div>
-          <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Afternoon Courses</h3>
-          <ul class="course-list">
-            <li><h4>Sailing 1</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-            <li><h4>Sailing 2</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-            <li><h4>Windsurfing</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-          </ul>
-        </article>
-        <article class="program-card program-lead" data-reveal>
-          <div class="program-number">03</div><div class="program-icon" aria-hidden="true">≈</div>
-          <p class="program-meta">Ages 10–17 · 1 week</p><h3>Full-Day Courses</h3>
-          <ul class="course-list">
-            <li><h4>Beginner Daycamp</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-            <li><h4>Advanced Daycamp</h4><button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button></li>
-          </ul>
-        </article>
+      <div class="program-tabs">
+        <div class="program-tab-list" role="tablist" aria-label="Course schedule">
+          <button id="morning-tab" role="tab" aria-selected="true" aria-controls="morning-courses" data-program-tab type="button">Morning</button>
+          <button id="afternoon-tab" role="tab" aria-selected="false" aria-controls="afternoon-courses" data-program-tab type="button" tabindex="-1">Afternoon</button>
+          <button id="day-camp-tab" role="tab" aria-selected="false" aria-controls="day-camp-courses" data-program-tab type="button" tabindex="-1">Day Camp</button>
+        </div>
+
+        <div id="morning-courses" class="program-panel" role="tabpanel" aria-labelledby="morning-tab">
+          <div class="program-grid">
+            <article class="program-card program-discover">
+              <div class="program-number">01</div><div class="program-icon" aria-hidden="true">◒</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 1</h3>
+              <p>Learn the essentials of steering, sail trim, boat setup, and water safety in a friendly introduction to sailing.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="program-card program-develop">
+              <div class="program-number">02</div><div class="program-icon" aria-hidden="true">△</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 2</h3>
+              <p>Build stronger boat-handling skills, sail more independently, and take on new challenges across the lake.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="program-card program-lead">
+              <div class="program-number">03</div><div class="program-icon" aria-hidden="true">≈</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Windsurfing</h3>
+              <p>Practice balance and sail control, then catch the breeze for an energetic new way to move across the water.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
+        </div>
+
+        <div id="afternoon-courses" class="program-panel" role="tabpanel" aria-labelledby="afternoon-tab" hidden>
+          <div class="program-grid">
+            <article class="program-card program-discover">
+              <div class="program-number">01</div><div class="program-icon" aria-hidden="true">◒</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 1</h3>
+              <p>Learn the essentials of steering, sail trim, boat setup, and water safety in a friendly introduction to sailing.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="program-card program-develop">
+              <div class="program-number">02</div><div class="program-icon" aria-hidden="true">△</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 2</h3>
+              <p>Build stronger boat-handling skills, sail more independently, and take on new challenges across the lake.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="program-card program-lead">
+              <div class="program-number">03</div><div class="program-icon" aria-hidden="true">≈</div>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Windsurfing</h3>
+              <p>Practice balance and sail control, then catch the breeze for an energetic new way to move across the water.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
+        </div>
+
+        <div id="day-camp-courses" class="program-panel" role="tabpanel" aria-labelledby="day-camp-tab" hidden>
+          <div class="program-grid program-grid-day-camp">
+            <article class="program-card program-discover">
+              <div class="program-number">01</div><div class="program-icon" aria-hidden="true">☀</div>
+              <p class="program-meta">Ages 10–17 · 1 week</p><h3>Beginner Daycamp</h3>
+              <p>Spend a full week learning sailing fundamentals through games, teamwork, and plenty of supported lake time.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+            <article class="program-card program-lead">
+              <div class="program-number">02</div><div class="program-icon" aria-hidden="true">△</div>
+              <p class="program-meta">Ages 10–17 · 1 week</p><h3>Advanced Daycamp</h3>
+              <p>Sharpen racing, strategy, and leadership skills during a fast-moving week for experienced young sailors.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
+          </div>
+        </div>
       </div>
     </section>
 
