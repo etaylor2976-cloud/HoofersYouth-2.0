@@ -163,7 +163,9 @@ section[id] { scroll-margin-top: 5.5rem; }
 .gallery-two::before { content: ""; position: absolute; z-index: -2; inset: 0; background: url("assets/keelboat.jpg") center / cover no-repeat; }
 .gallery-two::after { content: ""; position: absolute; z-index: -1; inset: 45% 0 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.24)); }
 .gallery-two .placeholder-label { position: relative; z-index: 1; }
-.gallery-three { border-radius: 2.5rem 2.5rem 6rem 2.5rem; background-color: #efa18f; }
+.gallery-three { position: relative; display: flex; overflow: hidden; border-radius: 2.5rem 2.5rem 6rem 2.5rem; background-color: #efa18f; isolation: isolate; }
+.gallery-three::before { content: ""; position: absolute; z-index: -1; inset: 0; background: url("assets/zests.jpg") center / cover no-repeat; }
+.gallery-three .placeholder-label { position: relative; z-index: 1; }
 
 .testimonial { position: relative; overflow: hidden; background: var(--coral); color: var(--white); text-align: center; }
 .testimonial::before, .testimonial::after { content: ""; position: absolute; width: 10rem; height: 10rem; border: 1px solid rgba(255,255,255,.2); border-radius: 50%; }

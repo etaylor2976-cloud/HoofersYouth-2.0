@@ -20,11 +20,11 @@ test('homepage exposes accessible interactive hooks', () => {
   assert.match(html, /aria-controls=/);
 });
 
-test('image placeholders describe the intended future photography', () => {
+test('homepage photography uses accessible real-image cards', () => {
   const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
-  assert.ok(placeholders.length >= 1);
+  assert.equal(placeholders.length, 0);
   assert.match(html, /role="img"/);
-  assert.match(html, /aria-label="Placeholder for/);
+  assert.doesNotMatch(html, /aria-label="Placeholder for/);
 });
 
 test('homepage hero uses the supplied Techs photograph', () => {
@@ -59,6 +59,15 @@ test('second gallery card uses the supplied keelboat photograph', () => {
   assert.match(css, /\.gallery-two::after\s*\{[^}]*content:\s*""[^}]*linear-gradient\([^}]*transparent[^}]*rgba\(0,0,0,\.24\)/s);
   assert.match(css, /\.gallery-two\s*\{[^}]*position:\s*relative[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
   assert.match(css, /\.gallery-two \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
+});
+
+test('third gallery card uses the supplied Zest sailboat photograph', () => {
+  assert.match(html, /class="gallery-image gallery-three"[^>]+role="img"[^>]+aria-label="Youth sailors piloting bright green Zest sailboats on Lake Mendota"/);
+  assert.doesNotMatch(html, /class="image-placeholder gallery-image gallery-three"/);
+  assert.match(html, /<small>Photo placeholder<\/small>Chasing the wind<\/span>/);
+  assert.match(css, /\.gallery-three::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*0[^}]*url\("assets\/zests\.jpg"\)[^}]*center\s*\/\s*cover/s);
+  assert.match(css, /\.gallery-three\s*\{[^}]*position:\s*relative[^}]*display:\s*flex[^}]*overflow:\s*hidden[^}]*isolation:\s*isolate/s);
+  assert.match(css, /\.gallery-three \.placeholder-label\s*\{[^}]*position:\s*relative[^}]*z-index:\s*1/s);
 });
 
 test('ticker centers its text and overlaps the hero seam', () => {
