@@ -15,44 +15,44 @@
   {
     "src": "assets/slideshow/03-zests.jpg",
     "title": "Zest Sailing",
-    "description": "Responsive boats give young sailors a fun way to practice new skills.",
+    "description": "Beginner students learn the basics of sailing on the Zest, a small and stable sailboat.",
     "alt": "Youth sailing: Zest Sailing"
   },
   {
     "src": "assets/slideshow/IMG59930334353346700.jpg",
-    "title": "Image 4 Caption",
-    "description": "Image 4 Description",
-    "alt": "Youth sailing: Image 4 Caption"
+    "title": "Scow",
+    "description": "The Scow is a fast and exciting sailboat that challenges more experienced campers to develop their sailing skills.",
+    "alt": "Youth sailing: Scow"
   },
   {
     "src": "assets/slideshow/IMG3741786270949018312.jpg",
-    "title": "Image 5 Caption",
-    "description": "Image 5 Description",
-    "alt": "Youth sailing: Image 5 Caption"
+    "title": "All-Fleets Racing",
+    "description": "Campers of all skill levels compete in exciting races, testing their sailing abilities and strategy on the water.",
+    "alt": "Youth sailing: All-Fleets Racing"
   },
   {
     "src": "assets/slideshow/IMG4072112768973319724.jpg",
-    "title": "Image 6 Caption",
-    "description": "Image 6 Description",
-    "alt": "Youth sailing: Image 6 Caption"
+    "title": "Spray",
+    "description": "Spray, a Soverel 30, cruising in at sunset.",
+    "alt": "Youth sailing: Spray"
   },
   {
     "src": "assets/slideshow/IMG4266541135499900558.jpg",
-    "title": "Image 7 Caption",
-    "description": "Image 7 Description",
-    "alt": "Youth sailing: Image 7 Caption"
+    "title": "Ranger Sailing",
+    "description": "The Ranger is a advanced dinghy that challenges campers with a spinnaker and jib.",
+    "alt": "Youth sailing: Ranger Sailing"
   },
   {
     "src": "assets/slideshow/IMG4780312825659484616.jpg",
-    "title": "Image 8 Caption",
-    "description": "Image 8 Description",
-    "alt": "Youth sailing: Image 8 Caption"
+    "title": "Party Day Celebration",
+    "description": "Campers gather for a fun-filled day of activities and celebration.",
+    "alt": "Youth sailing: Party Day Celebration"
   },
   {
     "src": "assets/slideshow/IMG5022214307597748378.jpg",
-    "title": "Image 9 Caption",
-    "description": "Image 9 Description",
-    "alt": "Youth sailing: Image 9 Caption"
+    "title": "Community Chalk Drawing",
+    "description": "Campers and Instructors collaborate to create colorful chalk art on the ground.",
+    "alt": "Youth sailing: Community Chalk Drawing"
   },
   {
     "src": "assets/slideshow/IMG6569237602442246047.jpg",
