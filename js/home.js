@@ -52,8 +52,15 @@ function initCourseTabs(documentRef) {
 
 function normalizeSlideshowImages(value) {
   if (!Array.isArray(value)) return [];
-  return value.filter((image) => image && typeof image.src === 'string' && image.src &&
-    typeof image.title === 'string' && image.title && typeof image.alt === 'string' && image.alt);
+  return value
+    .filter((image) => image && typeof image.src === 'string' && image.src &&
+      typeof image.title === 'string' && image.title && typeof image.alt === 'string' && image.alt)
+    .map((image) => ({
+      src: image.src,
+      title: image.title,
+      description: typeof image.description === 'string' ? image.description : '',
+      alt: image.alt
+    }));
 }
 
 function wrapSlideIndex(index, count) {
@@ -79,11 +86,20 @@ function createSlide(documentRef, viewport, image) {
   const slide = documentRef.createElement('figure');
   const photo = documentRef.createElement('img');
   const caption = documentRef.createElement('figcaption');
+  const captionTitle = documentRef.createElement('strong');
   slide.className = 'slideshow-slide';
   photo.setAttribute('src', image.src);
   photo.setAttribute('alt', image.alt);
   photo.setAttribute('loading', 'lazy');
-  caption.textContent = image.title;
+  captionTitle.className = 'slideshow-caption-title';
+  captionTitle.textContent = image.title;
+  caption.append(captionTitle);
+  if (image.description) {
+    const description = documentRef.createElement('span');
+    description.className = 'slideshow-caption-description';
+    description.textContent = image.description;
+    caption.append(description);
+  }
   slide.append(photo, caption);
   viewport.append(slide);
   return slide;

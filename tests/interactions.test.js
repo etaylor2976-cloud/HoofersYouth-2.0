@@ -144,10 +144,29 @@ test('course tabs support wrapping arrow-key navigation', () => {
 test('slideshow image normalization rejects malformed manifest entries', () => {
   assert.deepEqual(normalizeSlideshowImages(null), []);
   assert.deepEqual(normalizeSlideshowImages([
-    { src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' },
+    {
+      src: 'assets/slideshow/01-lake.jpg',
+      title: 'Finding the Wind',
+      description: 'A young sailor practices reading the breeze.',
+      alt: 'Youth sailing: Finding the Wind'
+    },
+    { src: 'assets/slideshow/02-crew.jpg', title: 'Crew', alt: 'Youth sailing: Crew' },
     { src: '', title: 'Missing' },
     null
-  ]), [{ src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' }]);
+  ]), [
+    {
+      src: 'assets/slideshow/01-lake.jpg',
+      title: 'Finding the Wind',
+      description: 'A young sailor practices reading the breeze.',
+      alt: 'Youth sailing: Finding the Wind'
+    },
+    {
+      src: 'assets/slideshow/02-crew.jpg',
+      title: 'Crew',
+      description: '',
+      alt: 'Youth sailing: Crew'
+    }
+  ]);
 });
 
 test('slideshow controller wraps manual navigation and reports each selection', () => {
@@ -185,12 +204,23 @@ test('empty slideshow shows its fallback and hides viewport and controls', () =>
 test('single-image slideshow renders its image without navigation controls', () => {
   const fixture = slideshowFixture();
   initSlideshow(fixture.documentRef, [
-    { src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' }
+    {
+      src: 'assets/slideshow/01-lake.jpg',
+      title: 'Finding the Wind',
+      description: 'A young sailor practices reading the breeze.',
+      alt: 'Youth sailing: Finding the Wind'
+    }
   ]);
   assert.equal(fixture.viewport.hidden, false);
   assert.equal(fixture.controls.hidden, true);
   assert.equal(fixture.status.textContent, '1 of 1');
   assert.equal(fixture.viewport.children[0].children[0].getAttribute('src'), 'assets/slideshow/01-lake.jpg');
+  const caption = fixture.viewport.children[0].children[1];
+  assert.equal(caption.children.length, 2);
+  assert.equal(caption.children[0].className, 'slideshow-caption-title');
+  assert.equal(caption.children[0].textContent, 'Finding the Wind');
+  assert.equal(caption.children[1].className, 'slideshow-caption-description');
+  assert.equal(caption.children[1].textContent, 'A young sailor practices reading the breeze.');
 });
 
 test('slideshow buttons and arrow keys select and wrap visible slides', () => {

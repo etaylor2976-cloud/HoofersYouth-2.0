@@ -11,15 +11,19 @@ function titleFromFilename(fileName) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function scanImages(imageDir, publicBase = 'assets/slideshow') {
+function scanImages(imageDir, publicBase = 'assets/slideshow', captions = {}) {
   if (!fs.existsSync(imageDir)) return [];
   return fs.readdirSync(imageDir, { withFileTypes: true })
     .filter((entry) => entry.isFile() && SUPPORTED_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
     .map((entry) => entry.name)
     .sort((left, right) => left.localeCompare(right, 'en', { sensitivity: 'base', numeric: true }))
     .map((name) => {
-      const title = titleFromFilename(name);
-      return { src: `${publicBase}/${name}`, title, alt: `Youth sailing: ${title}` };
+      const metadata = captions[name] && typeof captions[name] === 'object' ? captions[name] : {};
+      const title = typeof metadata.caption === 'string' && metadata.caption.trim()
+        ? metadata.caption.trim()
+        : titleFromFilename(name);
+      const description = typeof metadata.description === 'string' ? metadata.description.trim() : '';
+      return { src: `${publicBase}/${name}`, title, description, alt: `Youth sailing: ${title}` };
     });
 }
 
@@ -30,10 +34,20 @@ function renderManifest(images) {
 function generateManifest({
   imageDir = path.resolve('assets/slideshow'),
   publicBase = 'assets/slideshow',
+  captionsFile,
   outputFile = path.resolve('js/slideshow-manifest.js'),
   check = false
 } = {}) {
-  const content = renderManifest(scanImages(imageDir, publicBase));
+  const metadataFile = captionsFile || path.join(imageDir, 'captions.json');
+  let captions = {};
+  if (fs.existsSync(metadataFile)) {
+    try {
+      captions = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
+    } catch (error) {
+      throw new Error(`Invalid slideshow captions JSON in ${metadataFile}: ${error.message}`);
+    }
+  }
+  const content = renderManifest(scanImages(imageDir, publicBase, captions));
   const current = fs.existsSync(outputFile) && fs.readFileSync(outputFile, 'utf8') === content;
   if (!check && !current) fs.writeFileSync(outputFile, content);
   return { changed: !current && !check, current, content };

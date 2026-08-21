@@ -6,7 +6,6 @@ const path = require('node:path');
 const {
   titleFromFilename,
   scanImages,
-  renderManifest,
   generateManifest
 } = require('../scripts/generate-slideshow-manifest.js');
 
@@ -22,10 +21,19 @@ test('scanImages filters supported files and sorts them by filename', () => {
   }
   fs.mkdirSync(path.join(dir, 'nested'));
 
-  assert.deepEqual(scanImages(dir, 'assets/slideshow'), [
-    { src: 'assets/slideshow/01-marina.PNG', title: 'Marina', alt: 'Youth sailing: Marina' },
-    { src: 'assets/slideshow/02-keelboat.webp', title: 'Keelboat', alt: 'Youth sailing: Keelboat' },
-    { src: 'assets/slideshow/03-zests.jpg', title: 'Zests', alt: 'Youth sailing: Zests' }
+  const captions = {
+    '01-marina.PNG': { caption: 'Learning at the Marina', description: 'A first lesson beside the dock.' }
+  };
+
+  assert.deepEqual(scanImages(dir, 'assets/slideshow', captions), [
+    {
+      src: 'assets/slideshow/01-marina.PNG',
+      title: 'Learning at the Marina',
+      description: 'A first lesson beside the dock.',
+      alt: 'Youth sailing: Learning at the Marina'
+    },
+    { src: 'assets/slideshow/02-keelboat.webp', title: 'Keelboat', description: '', alt: 'Youth sailing: Keelboat' },
+    { src: 'assets/slideshow/03-zests.jpg', title: 'Zests', description: '', alt: 'Youth sailing: Zests' }
   ]);
 });
 
@@ -42,7 +50,49 @@ test('generateManifest check mode detects stale output without overwriting it', 
   assert.match(result.content, /globalThis\.HoofersSlideshowImages/);
 });
 
-test('committed slideshow manifest matches the image directory', () => {
-  const expected = renderManifest(scanImages('assets/slideshow', 'assets/slideshow'));
-  assert.equal(fs.readFileSync('js/slideshow-manifest.js', 'utf8'), expected);
+test('generateManifest loads caption metadata beside the slideshow images', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hoofers-captions-'));
+  const outputFile = path.join(dir, 'manifest.js');
+  fs.writeFileSync(path.join(dir, '01-lake.jpg'), 'fixture');
+  fs.writeFileSync(path.join(dir, 'captions.json'), JSON.stringify({
+    '01-lake.jpg': {
+      caption: 'Finding the Wind',
+      description: 'A young sailor practices reading the breeze.'
+    }
+  }));
+
+  const result = generateManifest({ imageDir: dir, publicBase: 'assets/slideshow', outputFile });
+
+  assert.match(result.content, /"title": "Finding the Wind"/);
+  assert.match(result.content, /"description": "A young sailor practices reading the breeze\."/);
+});
+
+test('generateManifest reports the captions file when its JSON is invalid', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hoofers-invalid-captions-'));
+  const outputFile = path.join(dir, 'manifest.js');
+  fs.writeFileSync(path.join(dir, '01-lake.jpg'), 'fixture');
+  fs.writeFileSync(path.join(dir, 'captions.json'), '{ invalid json');
+
+  assert.throws(
+    () => generateManifest({ imageDir: dir, publicBase: 'assets/slideshow', outputFile }),
+    /Invalid slideshow captions JSON .*captions\.json/
+  );
+});
+
+test('caption metadata provides editable text for every slideshow image', () => {
+  const captionsPath = 'assets/slideshow/captions.json';
+  assert.equal(fs.existsSync(captionsPath), true, 'captions.json should exist');
+  const captions = JSON.parse(fs.readFileSync(captionsPath, 'utf8'));
+  const images = scanImages('assets/slideshow', 'assets/slideshow');
+
+  for (const image of images) {
+    const fileName = path.basename(image.src);
+    assert.equal(typeof captions[fileName]?.caption, 'string', `${fileName} needs a caption`);
+    assert.equal(typeof captions[fileName]?.description, 'string', `${fileName} needs a description`);
+  }
+});
+
+test('committed slideshow manifest is current for its images and captions', () => {
+  const result = generateManifest({ check: true });
+  assert.equal(result.current, true);
 });

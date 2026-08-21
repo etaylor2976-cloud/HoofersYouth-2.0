@@ -102,6 +102,8 @@ test('homepage gallery exposes one accessible manual slideshow shell', () => {
 test('stylesheet replaces the mosaic with a responsive framed slideshow', () => {
   assert.match(css, /\.slideshow\s*\{[^}]*max-width:\s*85rem/s);
   assert.match(css, /\.slideshow-viewport\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*border:\s*\.5rem solid var\(--white\)/s);
+  assert.match(css, /\.slideshow-caption-title\s*\{[^}]*display:\s*block/s);
+  assert.match(css, /\.slideshow-caption-description\s*\{[^}]*display:\s*block/s);
   assert.match(css, /\.slideshow-control/);
   assert.match(css, /\.slideshow-indicator\[aria-current="true"\]/);
   assert.doesNotMatch(css, /\.gallery-grid|\.gallery-one|\.gallery-two|\.gallery-three/);
