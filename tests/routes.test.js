@@ -10,7 +10,7 @@ const routes = {
 };
 const removedRouteNames = ['programs', 'about', 'faq', 'login', 'signup'];
 const expectedScripts = {
-  home: ['js/common.js', 'js/home.js'],
+  home: ['js/common.js', 'js/slideshow-manifest.js', 'js/home.js'],
   contact: ['../js/common.js', '../js/forms-common.js', '../js/contact.js']
 };
 

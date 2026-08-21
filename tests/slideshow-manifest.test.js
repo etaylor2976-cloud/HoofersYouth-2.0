@@ -41,3 +41,8 @@ test('generateManifest check mode detects stale output without overwriting it', 
   assert.equal(fs.readFileSync(outputFile, 'utf8'), 'stale');
   assert.match(result.content, /globalThis\.HoofersSlideshowImages/);
 });
+
+test('committed slideshow manifest matches the image directory', () => {
+  const expected = renderManifest(scanImages('assets/slideshow', 'assets/slideshow'));
+  assert.equal(fs.readFileSync('js/slideshow-manifest.js', 'utf8'), expected);
+});
