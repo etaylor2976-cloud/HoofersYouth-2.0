@@ -158,10 +158,15 @@
       <div class="gallery-heading" data-reveal>
         <p class="eyebrow">Life on the lake</p><h2 id="gallery-title">Sun out. Sails up.</h2>
       </div>
-      <div class="gallery-grid">
-        <div class="gallery-image gallery-one" role="img" aria-label="The Tong Family Marina and Hoofer sailing fleet on Lake Mendota" data-reveal><span class="placeholder-label"><small>The Tong Family Marina</small>Our state-of-the-art facility</span></div>
-        <div class="gallery-image gallery-two" role="img" aria-label="Youth sailors aboard a keelboat at sunset on Lake Mendota" data-reveal><span class="placeholder-label"><small>Photo placeholder</small>Finding your crew</span></div>
-        <div class="gallery-image gallery-three" role="img" aria-label="Youth sailors piloting bright green Zest sailboats on Lake Mendota" data-reveal><span class="placeholder-label"><small>Photo placeholder</small>Chasing the wind</span></div>
+      <div class="slideshow" data-slideshow tabindex="0" aria-label="Youth sailing photo slideshow" data-reveal>
+        <div class="slideshow-viewport" data-slideshow-viewport></div>
+        <p class="slideshow-empty" data-slideshow-empty hidden>Photos coming soon.</p>
+        <div class="slideshow-controls" data-slideshow-controls>
+          <button class="slideshow-control" type="button" data-slide-previous aria-label="Previous photo"><span aria-hidden="true">←</span></button>
+          <div class="slideshow-indicators" data-slide-indicators aria-label="Choose a photo"></div>
+          <p class="slideshow-status" data-slide-status aria-live="polite"></p>
+          <button class="slideshow-control" type="button" data-slide-next aria-label="Next photo"><span aria-hidden="true">→</span></button>
+        </div>
       </div>
     </section>
 
