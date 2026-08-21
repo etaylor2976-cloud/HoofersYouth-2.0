@@ -25,6 +25,12 @@
     "alt": "Youth sailing: Scow"
   },
   {
+    "src": "assets/slideshow/IMG434248476951046545.jpg",
+    "title": "Hoofer's Youth 2026 Group Photo",
+    "description": "Finishing off a great year on the water, the Hoofer's Youth 2026 group gathers for a memorable photo.",
+    "alt": "Youth sailing: Hoofer's Youth 2026 Group Photo"
+  },
+  {
     "src": "assets/slideshow/IMG3741786270949018312.jpg",
     "title": "All-Fleets Racing",
     "description": "Campers of all skill levels compete in exciting races, testing their sailing abilities and strategy on the water.",
