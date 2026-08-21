@@ -1,7 +1,14 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { setMenuState } = require('../js/common.js');
-const { initHome, initCourseTabs } = require('../js/home.js');
+const {
+  initHome,
+  initCourseTabs,
+  normalizeSlideshowImages,
+  wrapSlideIndex,
+  createSlideshowController,
+  initSlideshow
+} = require('../js/home.js');
 
 function fakeElement() {
   const attrs = new Map();
@@ -24,6 +31,49 @@ function fakeElement() {
     setAttribute(name, value) { attrs.set(name, String(value)); },
     getAttribute(name) { return attrs.get(name); }
   };
+}
+
+function fakeNode(tagName = 'div') {
+  const attrs = new Map();
+  const listeners = new Map();
+  const selectorMap = new Map();
+  return {
+    tagName,
+    hidden: false,
+    className: '',
+    textContent: '',
+    children: [],
+    listeners,
+    register(selector, node) { selectorMap.set(selector, node); },
+    querySelector(selector) { return selectorMap.get(selector) || null; },
+    append(...nodes) { this.children.push(...nodes); },
+    addEventListener(name, handler) { listeners.set(name, handler); },
+    setAttribute(name, value) { attrs.set(name, String(value)); },
+    getAttribute(name) { return attrs.get(name); }
+  };
+}
+
+function slideshowFixture() {
+  const root = fakeNode();
+  const viewport = fakeNode();
+  const previous = fakeNode('button');
+  const next = fakeNode('button');
+  const indicators = fakeNode();
+  const status = fakeNode('p');
+  const empty = fakeNode('p');
+  const controls = fakeNode();
+  root.register('[data-slideshow-viewport]', viewport);
+  root.register('[data-slide-previous]', previous);
+  root.register('[data-slide-next]', next);
+  root.register('[data-slide-indicators]', indicators);
+  root.register('[data-slide-status]', status);
+  root.register('[data-slideshow-empty]', empty);
+  root.register('[data-slideshow-controls]', controls);
+  const documentRef = {
+    querySelector(selector) { return selector === '[data-slideshow]' ? root : null; },
+    createElement(elementName) { return fakeNode(elementName); }
+  };
+  return { documentRef, root, viewport, previous, next, indicators, status, empty, controls };
 }
 
 test('setMenuState keeps the mobile menu and aria state synchronized', () => {
@@ -91,6 +141,79 @@ test('course tabs support wrapping arrow-key navigation', () => {
   assert.equal(panels.get('panel-2').hidden, false);
 });
 
+test('slideshow image normalization rejects malformed manifest entries', () => {
+  assert.deepEqual(normalizeSlideshowImages(null), []);
+  assert.deepEqual(normalizeSlideshowImages([
+    { src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' },
+    { src: '', title: 'Missing' },
+    null
+  ]), [{ src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' }]);
+});
+
+test('slideshow controller wraps manual navigation and reports each selection', () => {
+  const changes = [];
+  const controller = createSlideshowController(3, (index) => changes.push(index));
+
+  controller.previous();
+  controller.next();
+  controller.goTo(2);
+  controller.next();
+
+  assert.equal(controller.index, 0);
+  assert.deepEqual(changes, [2, 0, 2, 0]);
+  assert.equal(wrapSlideIndex(-1, 3), 2);
+  assert.equal(wrapSlideIndex(3, 3), 0);
+});
+
+test('slideshow controller ignores navigation when no images exist', () => {
+  const changes = [];
+  const controller = createSlideshowController(0, (index) => changes.push(index));
+  controller.next();
+  controller.previous();
+  assert.equal(controller.index, 0);
+  assert.deepEqual(changes, []);
+});
+
+test('empty slideshow shows its fallback and hides viewport and controls', () => {
+  const fixture = slideshowFixture();
+  initSlideshow(fixture.documentRef, []);
+  assert.equal(fixture.empty.hidden, false);
+  assert.equal(fixture.viewport.hidden, true);
+  assert.equal(fixture.controls.hidden, true);
+});
+
+test('single-image slideshow renders its image without navigation controls', () => {
+  const fixture = slideshowFixture();
+  initSlideshow(fixture.documentRef, [
+    { src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' }
+  ]);
+  assert.equal(fixture.viewport.hidden, false);
+  assert.equal(fixture.controls.hidden, true);
+  assert.equal(fixture.status.textContent, '1 of 1');
+  assert.equal(fixture.viewport.children[0].children[0].getAttribute('src'), 'assets/slideshow/01-lake.jpg');
+});
+
+test('slideshow buttons and arrow keys select and wrap visible slides', () => {
+  const fixture = slideshowFixture();
+  initSlideshow(fixture.documentRef, [
+    { src: 'assets/slideshow/01-lake.jpg', title: 'Lake', alt: 'Youth sailing: Lake' },
+    { src: 'assets/slideshow/02-crew.jpg', title: 'Crew', alt: 'Youth sailing: Crew' }
+  ]);
+
+  fixture.next.listeners.get('click')();
+  assert.equal(fixture.status.textContent, '2 of 2');
+  assert.equal(fixture.viewport.children[0].hidden, true);
+  assert.equal(fixture.viewport.children[1].hidden, false);
+
+  let prevented = false;
+  fixture.root.listeners.get('keydown')({ key: 'ArrowRight', preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(fixture.status.textContent, '1 of 2');
+
+  fixture.indicators.children[1].listeners.get('click')();
+  assert.equal(fixture.status.textContent, '2 of 2');
+});
+
 test('initHome lets keyboard users close the mobile menu with Escape', () => {
   const toggle = fakeElement();
   const nav = fakeElement();
@@ -99,7 +222,11 @@ test('initHome lets keyboard users close the mobile menu with Escape', () => {
   const documentListeners = new Map();
   const documentRef = {
     documentElement: fakeElement(),
-    querySelector(selector) { return selector === '#menu-toggle' ? toggle : nav; },
+    querySelector(selector) {
+      if (selector === '#menu-toggle') return toggle;
+      if (selector === '#primary-nav') return nav;
+      return null;
+    },
     querySelectorAll() { return []; },
     addEventListener(name, handler) { documentListeners.set(name, handler); },
     getElementById() { return null; }
