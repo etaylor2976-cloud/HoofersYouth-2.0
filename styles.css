@@ -140,7 +140,8 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-develop { background: var(--sunny); color: var(--navy); }
 .program-lead { background: var(--navy); color: var(--white); }
 .program-number { position: absolute; top: 2rem; right: 2rem; opacity: .55; font-size: .7rem; font-weight: 800; letter-spacing: .12em; }
-.program-icon { display: grid; width: 4.4rem; height: 4.4rem; margin-bottom: 4rem; place-items: center; border: 1px solid currentColor; border-radius: 50%; font-size: 2rem; }
+.program-image-placeholder { display: grid; width: 100%; aspect-ratio: 16 / 9; margin-bottom: 1.75rem; place-items: center; border: 1px dashed currentColor; border-radius: calc(var(--radius-lg) * .55); background: rgba(255,255,255,.22); }
+.program-image-placeholder span { opacity: .66; font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .program-meta { margin-bottom: .8rem; font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .program-card h3 { max-width: 11ch; margin-bottom: 1.1rem; font-size: clamp(2.3rem, 3.7vw, 3.5rem); }
 .program-card > p:not(.program-meta) { min-height: 7.5rem; opacity: .82; }
@@ -225,7 +226,7 @@ section[id] { scroll-margin-top: 5.5rem; }
   .section-heading { margin-bottom: clamp(1.5rem, 3vh, 2.5rem); }
   .program-panel { margin-top: clamp(1rem, 2vh, 1.5rem); }
   .program-card { min-height: clamp(22rem, 46vh, 26rem); }
-  .program-icon { margin-bottom: clamp(1.5rem, 3vh, 2.5rem); }
+  .program-image-placeholder { margin-bottom: clamp(1.25rem, 2.5vh, 1.75rem); }
   .program-card > p:not(.program-meta) { min-height: clamp(4.5rem, 8vh, 6rem); }
   .confidence-visual { min-height: min(68vh, 40rem); }
   .gallery-heading { margin-bottom: clamp(1.25rem, 3vh, 2rem); }

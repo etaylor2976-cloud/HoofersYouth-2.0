@@ -51,6 +51,22 @@ test('programs section presents course selections in three accessible tabs', () 
   assert.doesNotMatch(programs, /Ages 10-18/);
 });
 
+test('every course card reserves a labeled image placeholder instead of an icon', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+
+  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 8);
+  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 8);
+  assert.doesNotMatch(programs, /class="program-icon"/);
+});
+
+test('course image placeholders use a responsive photo-shaped frame', () => {
+  const placeholderRule = css.match(/\.program-image-placeholder\s*\{[^}]*\}/)?.[0] || '';
+
+  assert.match(placeholderRule, /width:\s*100%/);
+  assert.match(placeholderRule, /aspect-ratio:\s*16\s*\/\s*9/);
+  assert.match(placeholderRule, /border:\s*[^;]*dashed/);
+});
+
 test('program cards share one level resting position', () => {
   const yellowCardRule = css.match(/\.program-develop\s*\{[^}]*\}/)?.[0] || '';
 
@@ -65,10 +81,9 @@ test('stylesheet no longer contains deleted page-only components', () => {
   }
 });
 
-test('homepage photography uses accessible real-image cards', () => {
-  const placeholders = html.match(/class="[^"]*image-placeholder[^"]*"/g) || [];
-  assert.equal(placeholders.length, 0);
+test('homepage feature photography uses accessible real-image cards', () => {
   assert.match(html, /role="img"/);
+  assert.doesNotMatch(html, /class="image-placeholder (?:hero|confidence)-image"/);
   assert.doesNotMatch(html, /aria-label="Placeholder for/);
 });
 
