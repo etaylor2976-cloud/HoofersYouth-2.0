@@ -5,6 +5,44 @@ const fs = require('node:fs');
 const html = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
 
+function cssHex(variableName) {
+  const value = css.match(new RegExp(`${variableName}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1];
+  assert.ok(value, `${variableName} should resolve to a six-digit hex color`);
+  return value;
+}
+
+function contrastRatio(firstHex, secondHex) {
+  const luminance = (hex) => {
+    const channels = hex.slice(1).match(/.{2}/g).map((value) => parseInt(value, 16) / 255);
+    const linear = channels.map((value) => value <= 0.04045
+      ? value / 12.92
+      : ((value + 0.055) / 1.055) ** 2.4);
+    return (0.2126 * linear[0]) + (0.7152 * linear[1]) + (0.0722 * linear[2]);
+  };
+  const lighter = Math.max(luminance(firstHex), luminance(secondHex));
+  const darker = Math.min(luminance(firstHex), luminance(secondHex));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function colorHsl(hex) {
+  const [red, green, blue] = hex.slice(1).match(/.{2}/g).map((value) => parseInt(value, 16) / 255);
+  const maximum = Math.max(red, green, blue);
+  const minimum = Math.min(red, green, blue);
+  const lightness = (maximum + minimum) / 2;
+  const delta = maximum - minimum;
+  let hue = 0;
+
+  if (delta) {
+    if (maximum === red) hue = ((green - blue) / delta) % 6;
+    else if (maximum === green) hue = ((blue - red) / delta) + 2;
+    else hue = ((red - green) / delta) + 4;
+    hue = (hue * 60 + 360) % 360;
+  }
+
+  const saturation = delta === 0 ? 0 : delta / (1 - Math.abs((2 * lightness) - 1));
+  return { hue, saturation: saturation * 100, lightness: lightness * 100 };
+}
+
 test('homepage contains its core sections and primary action', () => {
   for (const id of ['programs', 'why-sailing', 'gallery', 'faq']) {
     assert.match(html, new RegExp(`id=["']${id}["']`));
@@ -13,11 +51,24 @@ test('homepage contains its core sections and primary action', () => {
   assert.match(html, /Your best summer starts here/i);
 });
 
+test('homepage presents confidence before course selection', () => {
+  const sectionIds = [...html.matchAll(/<section id="([^"]+)"/g)].map((match) => match[1]);
+
+  assert.deepEqual(sectionIds, ['top', 'why-sailing', 'programs', 'gallery', 'faq']);
+});
+
 test('homepage exposes accessible interactive hooks', () => {
   assert.match(html, /id="menu-toggle"[^>]*aria-expanded="false"/);
   assert.match(html, /id="primary-nav"/);
   assert.match(html, /data-faq-button/);
   assert.match(html, /aria-controls=/);
+});
+
+test('sticky navigation uses a solid cream surface', () => {
+  const headerRule = css.match(/\.site-header\s*\{[^}]*\}/)?.[0] || '';
+
+  assert.match(headerRule, /position:\s*sticky/);
+  assert.match(headerRule, /background:\s*var\(--cream\)/);
 });
 
 test('homepage keeps Programs and FAQ as sections without deleted page links', () => {
@@ -68,11 +119,48 @@ test('course image placeholders use a responsive photo-shaped frame', () => {
 });
 
 test('program cards share one level resting position', () => {
-  const yellowCardRule = css.match(/\.program-develop\s*\{[^}]*\}/)?.[0] || '';
+  const developCardRule = css.match(/\.program-develop\s*\{[^}]*\}/)?.[0] || '';
+  const hoverRule = css.match(/\.program-card:hover\s*\{[^}]*\}/)?.[0] || '';
 
-  assert.doesNotMatch(yellowCardRule, /transform\s*:/);
+  assert.doesNotMatch(developCardRule, /transform\s*:/);
   assert.doesNotMatch(css, /\.program-develop:hover\s*\{/);
-  assert.match(css, /\.program-card:hover\s*\{[^}]*translateY\(-\.55rem\)/);
+  assert.match(hoverRule, /translateY\(-\.3rem\)/);
+  assert.doesNotMatch(hoverRule, /rotate\(/);
+});
+
+test('course cards use the approved palette with readable text', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+  const cardClasses = {};
+
+  for (const match of programs.matchAll(/<article class="program-card ([^"]+)">([\s\S]*?)<\/article>/g)) {
+    const title = match[2].match(/<h3>([^<]+)<\/h3>/)?.[1];
+    if (title) cardClasses[title] = match[1];
+  }
+
+  assert.deepEqual(cardClasses, {
+    'Sailing 1': 'program-discover',
+    'Sailing 2': 'program-develop',
+    Windsurfing: 'program-windsurf',
+    'Beginner Daycamp': 'program-discover',
+    'Advanced Daycamp': 'program-lead'
+  });
+
+  const palettes = {
+    'program-discover': ['--seafoam', '--navy'],
+    'program-develop': ['--ink', '--white'],
+    'program-windsurf': ['--sunny', '--ink'],
+    'program-lead': ['--ink', '--white']
+  };
+
+  for (const [className, [backgroundToken, textToken]] of Object.entries(palettes)) {
+    const rule = css.match(new RegExp(`\\.${className}\\s*\\{[^}]*\\}`))?.[0] || '';
+    assert.match(rule, new RegExp(`background:\\s*var\\(${backgroundToken}\\)`));
+    assert.match(rule, new RegExp(`color:\\s*var\\(${textToken}\\)`));
+    assert.ok(
+      contrastRatio(cssHex(backgroundToken), cssHex(textToken)) >= 4.5,
+      `${className} text should meet WCAG AA contrast`
+    );
+  }
 });
 
 test('stylesheet no longer contains deleted page-only components', () => {
@@ -87,12 +175,13 @@ test('homepage feature photography uses accessible real-image cards', () => {
   assert.doesNotMatch(html, /aria-label="Placeholder for/);
 });
 
-test('homepage hero uses the supplied Techs photograph', () => {
-  assert.match(html, /class="hero-image"[^>]+role="img"[^>]+aria-label="Young sailors aboard Tech sailboats on Lake Mendota"/);
-  assert.doesNotMatch(html, /class="hero-photo"/);
-  assert.match(css, /\.hero-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Techs\.jpg"\)[^}]*cover/s);
-  assert.match(css, /\.hero-image::before\s*\{[^}]*background-position:\s*60%\s+center/s);
-  assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
+test('homepage hero uses the supplied Techs photograph as its full background', () => {
+  const heroRule = css.match(/\.hero\s*\{[^}]*\}/)?.[0] || '';
+
+  assert.match(heroRule, /background:[^;]*linear-gradient\([^;]*url\("assets\/Techs\.jpg"\)[^;]*cover[^;]*no-repeat/s);
+  assert.doesNotMatch(html, /class="hero-(?:visual|image)"/);
+  assert.doesNotMatch(css, /\.hero-image(?:\s|:|\{)/);
+  assert.match(heroRule, /grid-template-columns:\s*minmax\(0,\s*43rem\)/);
 });
 
 test('confidence section uses the supplied Youth Sailing photograph', () => {
@@ -156,6 +245,32 @@ test('stylesheet defines the approved palette and responsive safeguards', () => 
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /overflow-x:\s*clip/);
+});
+
+test('primary buttons remain readable on the subdued nautical palette', () => {
+  const buttonRule = css.match(/\.button\s*\{[^}]*\}/)?.[0] || '';
+  const backgroundToken = buttonRule.match(/background:\s*var\((--[a-z-]+)\)/)?.[1];
+  const textToken = buttonRule.match(/color:\s*var\((--[a-z-]+)\)/)?.[1];
+
+  assert.ok(backgroundToken, 'primary button background token');
+  assert.ok(textToken, 'primary button text token');
+  assert.ok(
+    contrastRatio(cssHex(backgroundToken), cssHex(textToken)) >= 4.5,
+    'primary button text should meet WCAG AA contrast'
+  );
+});
+
+test('brand accents stay within a subdued nautical color range', () => {
+  const ocean = colorHsl(cssHex('--ocean'));
+  const coral = colorHsl(cssHex('--coral'));
+  const sunny = colorHsl(cssHex('--sunny'));
+
+  assert.ok(ocean.hue >= 175 && ocean.hue <= 205, 'ocean should remain blue-green');
+  assert.ok(ocean.saturation <= 32, 'ocean should be muted');
+  assert.ok(coral.hue >= 5 && coral.hue <= 18, 'coral should remain warm');
+  assert.ok(coral.saturation <= 38, 'coral should be muted');
+  assert.ok(sunny.hue >= 35 && sunny.hue <= 48, 'sunny should read as warm sand');
+  assert.ok(sunny.saturation <= 42, 'sunny should be muted');
 });
 
 test('desktop homepage sections fit the viewport without forcing the mobile layout', () => {

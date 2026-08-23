@@ -54,6 +54,15 @@ test('Contact loads the shared root stylesheet', () => {
   assert.match(fs.readFileSync(routes.contact, 'utf8'), /href="\.\.\/styles\.css"/);
 });
 
+test('Contact keeps its nautical surface above the generic interior-page background', () => {
+  const css = fs.readFileSync('styles.css', 'utf8');
+
+  assert.match(
+    css,
+    /\.page-main\.contact-page\s*\{[^}]*background:\s*linear-gradient\(/s
+  );
+});
+
 test('remaining routes identify their active page', () => {
   Object.entries(routes).forEach(([name, file]) => {
     const html = fs.readFileSync(file, 'utf8');
