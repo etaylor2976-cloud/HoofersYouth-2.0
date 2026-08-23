@@ -132,3 +132,15 @@ test('stylesheet defines the approved palette and responsive safeguards', () => 
   assert.match(css, /:focus-visible/);
   assert.match(css, /overflow-x:\s*clip/);
 });
+
+test('desktop homepage sections fit the viewport without forcing the mobile layout', () => {
+  const desktopLayout = css.match(/@media\s*\(min-width:\s*68\.0625rem\)\s*\{[\s\S]*$/)?.[0] || '';
+
+  assert.match(desktopLayout, /\.hero\s*\{[^}]*min-height:\s*calc\(100svh\s*-\s*5\.25rem\s*-\s*2\.75rem\)/s);
+  assert.match(desktopLayout, /\.section\s*\{[^}]*min-height:\s*100svh/s);
+  assert.match(desktopLayout, /\.programs\s*,\s*\.gallery\s*\{[^}]*align-content:\s*center/s);
+  assert.match(desktopLayout, /\.confidence\s*,\s*\.faq\s*\{[^}]*align-items:\s*center/s);
+
+  const mobileLayout = css.match(/@media\s*\(max-width:\s*48rem\)\s*\{[\s\S]*?\/\* Contact form \*\//)?.[0] || '';
+  assert.match(mobileLayout, /\.hero\s*\{[^}]*min-height:\s*auto/s);
+});

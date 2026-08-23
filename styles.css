@@ -201,6 +201,32 @@ section[id] { scroll-margin-top: 5.5rem; }
 .reveal-ready .program-grid [data-reveal]:nth-child(2) { transition-delay: .08s; }
 .reveal-ready .program-grid [data-reveal]:nth-child(3) { transition-delay: .16s; }
 
+@media (min-width: 68.0625rem) {
+  .hero {
+    min-height: calc(100svh - 5.25rem - 2.75rem);
+    padding-block: clamp(2rem, 4vh, 3.5rem);
+  }
+  .hero-visual { min-height: min(67vh, 40rem); }
+  .section {
+    min-height: 100svh;
+    padding-block: clamp(3rem, 6vh, 5rem);
+  }
+  .programs, .gallery {
+    display: grid;
+    align-content: center;
+  }
+  .confidence, .faq { align-items: center; }
+  .section-heading { margin-bottom: clamp(1.5rem, 3vh, 2.5rem); }
+  .program-panel { margin-top: clamp(1rem, 2vh, 1.5rem); }
+  .program-card { min-height: clamp(22rem, 46vh, 26rem); }
+  .program-icon { margin-bottom: clamp(1.5rem, 3vh, 2.5rem); }
+  .program-card > p:not(.program-meta) { min-height: clamp(4.5rem, 8vh, 6rem); }
+  .confidence-visual { min-height: min(68vh, 40rem); }
+  .gallery-heading { margin-bottom: clamp(1.25rem, 3vh, 2rem); }
+  .slideshow { width: 100%; max-width: min(85rem, 112vh); }
+  .slideshow-controls { margin-top: clamp(.75rem, 1.5vh, 1.25rem); }
+}
+
 @media (max-width: 68rem) {
   .hero { grid-template-columns: 1fr 1fr; padding-inline: 3rem; }
   .hero h1 { font-size: clamp(3.6rem, 7vw, 5.3rem); }
