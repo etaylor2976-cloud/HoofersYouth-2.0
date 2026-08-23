@@ -197,6 +197,16 @@ test('confidence section uses the supplied Youth Sailing photograph', () => {
   assert.doesNotMatch(css, /\.confidence-visual::before\s*\{/);
 });
 
+test('confidence section introduces the club in one paragraph', () => {
+  const confidence = html.match(/<section id="why-sailing"[\s\S]*?<\/section>/)?.[0] || '';
+
+  assert.match(confidence, /Part of the Wisconsin Hoofers community/);
+  assert.match(confidence, /connection to Madison’s sailing community\./);
+  assert.equal((confidence.match(/<p>/g) || []).length, 1);
+  assert.doesNotMatch(confidence, /class="benefit-list"|Safety first, always|Qualified, caring coaches|Skills that travel/);
+  assert.doesNotMatch(css, /\.benefit-list/);
+});
+
 test('homepage gallery exposes one accessible manual slideshow shell', () => {
   const gallery = html.match(/<section id="gallery"[\s\S]*?<\/section>/)?.[0] || '';
   assert.match(gallery, /data-slideshow[^>]+tabindex="0"/);
