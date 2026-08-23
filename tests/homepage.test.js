@@ -95,6 +95,11 @@ test('homepage hero uses the supplied Techs photograph', () => {
   assert.match(css, /\.hero-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
 });
 
+test('hero omits the wave lines and concentric circle decorations', () => {
+  assert.doesNotMatch(html, /class="wave-lines"/);
+  assert.doesNotMatch(css, /\.wave-lines|\.hero::before/);
+});
+
 test('confidence section uses the supplied Youth Sailing photograph', () => {
   assert.match(html, /class="confidence-image"[^>]+role="img"[^>]+aria-label="Young sailors learning together around a sailboat"/);
   assert.doesNotMatch(html, /class="image-placeholder confidence-image"/);
