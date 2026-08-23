@@ -151,11 +151,30 @@ function initSlideshow(documentRef, imageData = globalThis.HoofersSlideshowImage
   render(0);
 }
 
+function initNewsletter(documentRef) {
+  const form = documentRef.querySelector('[data-newsletter-form]');
+  if (!form) return;
+  const status = form.querySelector('[data-newsletter-status]');
+  if (!status) return;
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    status.textContent = '';
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    status.textContent = 'Thanks! You’re on the list.';
+    form.reset();
+  });
+}
+
 function initHome(documentRef = document, windowRef = window) {
   common.initCommon(documentRef, windowRef);
   initCourseTabs(documentRef);
   initSlideshow(documentRef);
   initFaqDisclosures(documentRef);
+  initNewsletter(documentRef);
 }
 
 if (typeof document !== 'undefined') {
@@ -171,6 +190,7 @@ const api = {
   wrapSlideIndex,
   createSlideshowController,
   initSlideshow,
+  initNewsletter,
   initHome
 };
 if (typeof module !== 'undefined') module.exports = api;

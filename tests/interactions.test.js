@@ -7,7 +7,8 @@ const {
   normalizeSlideshowImages,
   wrapSlideIndex,
   createSlideshowController,
-  initSlideshow
+  initSlideshow,
+  initNewsletter
 } = require('../js/home.js');
 
 function fakeElement() {
@@ -296,4 +297,45 @@ test('initHome wires homepage FAQ disclosures', () => {
 
   assert.equal(button.getAttribute('aria-expanded'), 'true');
   assert.equal(panel.hidden, false);
+});
+
+test('newsletter signup confirms a valid email inline', () => {
+  const form = fakeNode('form');
+  const status = fakeNode('p');
+  let reset = false;
+  form.checkValidity = () => true;
+  form.reset = () => { reset = true; };
+  form.register('[data-newsletter-status]', status);
+  const documentRef = {
+    querySelector(selector) { return selector === '[data-newsletter-form]' ? form : null; }
+  };
+
+  initNewsletter(documentRef);
+  let prevented = false;
+  form.listeners.get('submit')({ preventDefault() { prevented = true; } });
+
+  assert.equal(prevented, true);
+  assert.equal(status.textContent, 'Thanks! You’re on the list.');
+  assert.equal(reset, true);
+});
+
+test('newsletter signup leaves an invalid email unsubmitted', () => {
+  const form = fakeNode('form');
+  const status = fakeNode('p');
+  let reported = false;
+  let reset = false;
+  form.checkValidity = () => false;
+  form.reportValidity = () => { reported = true; };
+  form.reset = () => { reset = true; };
+  form.register('[data-newsletter-status]', status);
+  const documentRef = {
+    querySelector(selector) { return selector === '[data-newsletter-form]' ? form : null; }
+  };
+
+  initNewsletter(documentRef);
+  form.listeners.get('submit')({ preventDefault() {} });
+
+  assert.equal(reported, true);
+  assert.equal(status.textContent, '');
+  assert.equal(reset, false);
 });

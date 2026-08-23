@@ -56,9 +56,18 @@
       </div>
     </section>
 
-    <div class="ticker" aria-hidden="true">
-      <div>Learn the ropes <span>✦</span> Find your crew <span>✦</span> Chase the wind <span>✦</span> Learn the ropes <span>✦</span> Find your crew <span>✦</span></div>
-    </div>
+    <aside class="newsletter-banner" aria-labelledby="newsletter-title">
+      <div class="newsletter-copy">
+        <h2 id="newsletter-title">Join our newsletter</h2>
+        <p>Camp dates, lake updates, and sailing stories—straight to your inbox.</p>
+      </div>
+      <form class="newsletter-form" data-newsletter-form novalidate>
+        <label class="visually-hidden" for="newsletter-email">Email address</label>
+        <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <button class="button" type="submit">Join the crew <span aria-hidden="true">→</span></button>
+        <p class="newsletter-status" data-newsletter-status aria-live="polite"></p>
+      </form>
+    </aside>
 
     <section id="programs" class="section programs" aria-labelledby="programs-title">
       <div class="section-heading" data-reveal>

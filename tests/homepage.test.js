@@ -109,10 +109,20 @@ test('stylesheet replaces the mosaic with a responsive framed slideshow', () => 
   assert.doesNotMatch(css, /\.gallery-grid|\.gallery-one|\.gallery-two|\.gallery-three/);
 });
 
-test('ticker centers its text and overlaps the hero seam', () => {
-  assert.match(css, /\.ticker\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2[^}]*display:\s*flex[^}]*justify-content:\s*center[^}]*margin-top:\s*-1\.5rem/s);
-  assert.match(css, /\.ticker div\s*\{[^}]*flex:\s*none[^}]*width:\s*max-content/s);
-  assert.match(css, /\.ticker\s*\{[^}]*transform:\s*rotate\(-1deg\)\s*scale\(1\.02\)/s);
+test('newsletter banner keeps the blue hero seam and responsive inline form', () => {
+  assert.match(css, /\.newsletter-banner\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2[^}]*display:\s*grid[^}]*min-height:\s*7\.5rem[^}]*margin-top:\s*-1\.5rem[^}]*background:\s*var\(--navy\)/s);
+  assert.match(css, /\.newsletter-form\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(12rem,\s*1fr\)\s+auto/s);
+  assert.doesNotMatch(css, /\.ticker\s*\{/);
+});
+
+test('homepage exposes an accessible inline newsletter signup', () => {
+  const banner = html.match(/<aside class="newsletter-banner"[\s\S]*?<\/aside>/)?.[0] || '';
+
+  assert.match(banner, /aria-labelledby="newsletter-title"/);
+  assert.match(banner, /<form[^>]+data-newsletter-form/);
+  assert.match(banner, /<input[^>]+type="email"[^>]+required/);
+  assert.match(banner, /data-newsletter-status[^>]+aria-live="polite"/);
+  assert.doesNotMatch(html, /class="ticker"/);
 });
 
 test('homepage omits the testimonial and final crew CTA sections', () => {
@@ -136,7 +146,7 @@ test('stylesheet defines the approved palette and responsive safeguards', () => 
 test('desktop homepage sections fit the viewport without forcing the mobile layout', () => {
   const desktopLayout = css.match(/@media\s*\(min-width:\s*68\.0625rem\)\s*\{[\s\S]*$/)?.[0] || '';
 
-  assert.match(desktopLayout, /\.hero\s*\{[^}]*min-height:\s*calc\(100svh\s*-\s*5\.25rem\s*-\s*2\.75rem\)/s);
+  assert.match(desktopLayout, /\.hero\s*\{[^}]*min-height:\s*calc\(100svh\s*-\s*5\.25rem\s*-\s*6rem\)/s);
   assert.match(desktopLayout, /\.section\s*\{[^}]*min-height:\s*100svh/s);
   assert.match(desktopLayout, /\.programs\s*,\s*\.gallery\s*\{[^}]*align-content:\s*center/s);
   assert.match(desktopLayout, /\.confidence\s*,\s*\.faq\s*\{[^}]*align-items:\s*center/s);
