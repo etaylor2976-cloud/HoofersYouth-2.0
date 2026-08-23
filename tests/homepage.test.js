@@ -110,12 +110,18 @@ test('every course card reserves a labeled image placeholder instead of an icon'
   assert.doesNotMatch(programs, /class="program-icon"/);
 });
 
-test('course image placeholders use a responsive photo-shaped frame', () => {
+test('course cards use a flush borderless image top without number labels', () => {
   const placeholderRule = css.match(/\.program-image-placeholder\s*\{[^}]*\}/)?.[0] || '';
+  const cardRule = css.match(/\.program-card\s*\{[^}]*\}/)?.[0] || '';
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.match(placeholderRule, /width:\s*100%/);
+  assert.match(cardRule, /--card-padding:/);
+  assert.match(placeholderRule, /width:\s*calc\(100%\s*\+\s*\(2\s*\*\s*var\(--card-padding\)\)\)/);
   assert.match(placeholderRule, /aspect-ratio:\s*16\s*\/\s*9/);
-  assert.match(placeholderRule, /border:\s*[^;]*dashed/);
+  assert.match(placeholderRule, /margin:\s*calc\(-1\s*\*\s*var\(--card-padding\)\)/);
+  assert.match(placeholderRule, /border:\s*0/);
+  assert.doesNotMatch(programs, /class="program-number"/);
+  assert.doesNotMatch(css, /\.program-number/);
 });
 
 test('program cards share one level resting position', () => {

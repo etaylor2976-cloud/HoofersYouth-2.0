@@ -134,15 +134,14 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-panel[hidden] { display: none; }
 .program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 85rem; margin: 0 auto; }
 .program-grid-day-camp { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.program-card { position: relative; min-height: 29rem; padding: clamp(1.5rem, 3vw, 2.4rem); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: 0 .25rem .9rem rgba(13,40,55,.035); transition: transform .25s ease, box-shadow .25s ease; }
+.program-card { --card-padding: clamp(1.5rem, 3vw, 2.4rem); position: relative; min-height: 29rem; padding: var(--card-padding); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: 0 .25rem .9rem rgba(13,40,55,.035); transition: transform .25s ease, box-shadow .25s ease; }
 .program-card:hover { transform: translateY(-.3rem); box-shadow: var(--shadow); }
 .program-card::after { content: ""; position: absolute; right: -2.4rem; bottom: -2.4rem; width: 8rem; height: 8rem; border: 1px solid currentColor; border-radius: 50%; opacity: .08; box-shadow: 0 0 0 1.25rem transparent, 0 0 0 1.35rem currentColor; }
 .program-discover { background: var(--seafoam); color: var(--navy); }
 .program-develop { background: var(--ink); color: var(--white); }
 .program-lead { background: var(--ink); color: var(--white); }
 .program-windsurf { background: var(--sunny); color: var(--ink); }
-.program-number { position: absolute; top: 2rem; right: 2rem; opacity: .55; font-size: .7rem; font-weight: 800; letter-spacing: .12em; }
-.program-image-placeholder { display: grid; width: 100%; aspect-ratio: 16 / 9; margin-bottom: 1.75rem; place-items: center; border: 1px dashed currentColor; border-radius: calc(var(--radius-lg) * .55); background: rgba(255,255,255,.22); }
+.program-image-placeholder { display: grid; width: calc(100% + (2 * var(--card-padding))); aspect-ratio: 16 / 9; margin: calc(-1 * var(--card-padding)) calc(-1 * var(--card-padding)) 1.75rem; place-items: center; border: 0; border-radius: 0; background: rgba(255,255,255,.22); }
 .program-image-placeholder span { opacity: .66; font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .program-meta { margin-bottom: .8rem; font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .program-card h3 { max-width: 11ch; margin-bottom: 1.1rem; font-size: clamp(2.3rem, 3.7vw, 3.5rem); }
