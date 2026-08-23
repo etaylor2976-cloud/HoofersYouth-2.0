@@ -87,7 +87,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .hero {
   position: relative; display: grid; grid-template-columns: minmax(0, 43rem); align-items: center;
   min-height: calc(100vh - 5.25rem); padding: clamp(3.5rem, 7vw, 7.5rem) clamp(1.25rem, 7vw, 7.5rem) clamp(4rem, 7vw, 6.5rem);
-  background: linear-gradient(90deg, rgba(13, 40, 55, .92) 0%, rgba(13, 40, 55, .72) 44%, rgba(13, 40, 55, .12) 78%), url("assets/Techs.jpg") center 58% / cover no-repeat;
+  background: linear-gradient(90deg, rgba(11, 53, 88, .76) 0%, rgba(25, 127, 143, .52) 48%, rgba(245, 189, 79, .08) 100%), url("assets/Techs.jpg") center 58% / cover no-repeat;
 }
 .hero-copy { position: relative; z-index: 2; max-width: 43rem; }
 .hero-copy .eyebrow { display: flex; align-items: center; gap: .7rem; }
@@ -96,7 +96,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .hero h1 em { display: block; color: var(--sunny); font-style: normal; }
 .hero-intro { max-width: 35rem; margin-bottom: 1.8rem; color: var(--white); font-size: clamp(1rem, 1.3vw, 1.16rem); }
 .hero-actions { display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap; }
-.hero .button { border-color: var(--white); background: var(--white); color: var(--navy); }
+.hero .button { border-color: var(--sunny); background: var(--sunny); color: var(--navy); }
 .hero .button:hover { border-color: var(--cream); background: var(--cream); }
 .text-link { color: var(--white); font-size: .9rem; font-weight: 800; text-underline-offset: .3rem; }
 .trust-list { display: flex; gap: 0; max-width: 31rem; margin: 3rem 0 0; padding: 0; list-style: none; }

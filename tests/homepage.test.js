@@ -190,6 +190,17 @@ test('homepage hero uses the supplied Techs photograph as its full background', 
   assert.match(heroRule, /grid-template-columns:\s*minmax\(0,\s*43rem\)/);
 });
 
+test('hero uses a cheerful lake-day treatment with a sunny primary action', () => {
+  const heroRule = css.match(/\.hero\s*\{[^}]*\}/)?.[0] || '';
+  const heroButtonRule = css.match(/\.hero \.button\s*\{[^}]*\}/)?.[0] || '';
+
+  assert.match(heroRule, /rgba\(11,\s*53,\s*88,\s*\.76\)/);
+  assert.match(heroRule, /rgba\(25,\s*127,\s*143,\s*\.52\)/);
+  assert.match(heroRule, /rgba\(245,\s*189,\s*79,\s*\.08\)/);
+  assert.match(heroButtonRule, /background:\s*var\(--sunny\)/);
+  assert.match(heroButtonRule, /color:\s*var\(--navy\)/);
+});
+
 test('hero omits the wave lines and concentric circle decorations', () => {
   assert.doesNotMatch(html, /class="wave-lines"/);
   assert.doesNotMatch(css, /\.wave-lines|\.hero::before/);
