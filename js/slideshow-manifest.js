@@ -13,12 +13,6 @@
     "alt": "Youth sailing: Keelboat Adventures"
   },
   {
-    "src": "assets/slideshow/03-zests.jpg",
-    "title": "Zest Sailing",
-    "description": "Beginner students learn the basics of sailing on the Zest, a small and stable sailboat.",
-    "alt": "Youth sailing: Zest Sailing"
-  },
-  {
     "src": "assets/slideshow/IMG59930334353346700.jpg",
     "title": "Scow",
     "description": "The Scow is a fast and exciting sailboat that challenges more experienced campers to develop their sailing skills.",
@@ -31,18 +25,6 @@
     "alt": "Youth sailing: Hoofer's Youth 2026 Group Photo"
   },
   {
-    "src": "assets/slideshow/IMG3741786270949018312.jpg",
-    "title": "All-Fleets Racing",
-    "description": "Campers of all skill levels compete in exciting races, testing their sailing abilities and strategy on the water.",
-    "alt": "Youth sailing: All-Fleets Racing"
-  },
-  {
-    "src": "assets/slideshow/IMG4072112768973319724.jpg",
-    "title": "Spray",
-    "description": "Spray, a Soverel 30, cruising in at sunset.",
-    "alt": "Youth sailing: Spray"
-  },
-  {
     "src": "assets/slideshow/IMG4266541135499900558.jpg",
     "title": "Ranger Sailing",
     "description": "The Ranger is a advanced dinghy that challenges campers with a spinnaker and jib.",
@@ -53,12 +35,6 @@
     "title": "Party Day Celebration",
     "description": "Campers gather for a fun-filled day of activities and celebration.",
     "alt": "Youth sailing: Party Day Celebration"
-  },
-  {
-    "src": "assets/slideshow/IMG5022214307597748378.jpg",
-    "title": "Community Chalk Drawing",
-    "description": "Campers and Instructors collaborate to create colorful chalk art on the ground.",
-    "alt": "Youth sailing: Community Chalk Drawing"
   },
   {
     "src": "assets/slideshow/IMG6569237602442246047.jpg",
