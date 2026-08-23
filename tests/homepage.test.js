@@ -194,6 +194,7 @@ test('confidence section uses the supplied Youth Sailing photograph', () => {
   assert.doesNotMatch(html, /class="image-placeholder confidence-image"/);
   assert.match(css, /\.confidence-image::before\s*\{[^}]*content:\s*""[^}]*position:\s*absolute[^}]*inset:\s*-6%[^}]*background:[^}]*url\("assets\/Youth_Sailing1\.jpg"\)[^}]*cover/s);
   assert.match(css, /\.confidence-image\s*\{[^}]*overflow:\s*hidden[^}]*border-radius:/s);
+  assert.doesNotMatch(css, /\.confidence-visual::before\s*\{/);
 });
 
 test('homepage gallery exposes one accessible manual slideshow shell', () => {
@@ -222,6 +223,17 @@ test('newsletter banner keeps the blue hero seam and responsive inline form', ()
   assert.match(css, /\.newsletter-banner\s*\{[^}]*position:\s*relative[^}]*z-index:\s*2[^}]*display:\s*grid[^}]*min-height:\s*7\.5rem[^}]*margin-top:\s*-1\.5rem[^}]*background:\s*var\(--navy\)/s);
   assert.match(css, /\.newsletter-form\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(12rem,\s*1fr\)\s+auto/s);
   assert.doesNotMatch(css, /\.ticker\s*\{/);
+});
+
+test('newsletter controls stay vertically centered while status remains responsive', () => {
+  const formRule = css.match(/\.newsletter-form\s*\{[^}]*\}/)?.[0] || '';
+  const statusRule = css.match(/\.newsletter-status\s*\{[^}]*\}/)?.[0] || '';
+  const mobileLayout = css.match(/@media\s*\(max-width:\s*48rem\)\s*\{[\s\S]*?\/\* Contact form \*\//)?.[0] || '';
+
+  assert.match(formRule, /position:\s*relative/);
+  assert.match(statusRule, /position:\s*absolute/);
+  assert.match(statusRule, /top:\s*calc\(100%\s*\+\s*\.25rem\)/);
+  assert.match(mobileLayout, /\.newsletter-status\s*\{[^}]*position:\s*static/s);
 });
 
 test('homepage exposes an accessible inline newsletter signup', () => {
