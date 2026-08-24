@@ -8,7 +8,7 @@
   --seafoam: #dff4ed;
   --ocean: #197f8f;
   --ocean-dark: #116472;
-  --coral: #ef6f5b;
+  --coral: #f4872d;
   --sunny: #f5bd4f;
   --cream: #fffaf0;
   --ink: #102d3e;
@@ -140,7 +140,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-discover { background: var(--seafoam); color: var(--navy); }
 .program-develop { background: var(--ink); color: var(--white); }
 .program-lead { background: var(--ink); color: var(--white); }
-.program-windsurf { background: var(--sunny); color: var(--ink); }
+.program-windsurf { background: var(--coral); color: var(--ink); }
 .program-image-placeholder { display: grid; width: calc(100% + (2 * var(--card-padding))); aspect-ratio: 16 / 9; margin: calc(-1 * var(--card-padding)) calc(-1 * var(--card-padding)) 1.75rem; place-items: center; border: 0; border-radius: 0; background: rgba(255,255,255,.22); }
 .program-image-placeholder span { opacity: .66; font-size: .64rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .program-meta { margin-bottom: .8rem; font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
