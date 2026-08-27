@@ -110,8 +110,8 @@ test('programs section groups seven courses into Morning, Afternoon, and Full-Da
 test('every course card reserves a labeled image placeholder instead of an icon', () => {
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 4);
-  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 4);
+  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 2);
+  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 2);
   assert.doesNotMatch(programs, /class="program-icon"/);
 });
 
@@ -127,6 +127,22 @@ test('Advanced Daycamp uses its course photo instead of a placeholder', () => {
 
   assert.match(advancedDaycampCard, /<img class="program-image" src="assets\/ADV%20Daycamp\.jpg" alt="Advanced day campers sailing together">/);
   assert.doesNotMatch(advancedDaycampCard, /program-image-placeholder/);
+});
+
+test('Sailing Day Camp uses its course photo instead of a placeholder', () => {
+  const dayCampCard = [...html.matchAll(/<article class="program-card [^"]+">[\s\S]*?<\/article>/g)]
+    .map((match) => match[0])
+    .find((card) => card.includes('<h3>Sailing Day Camp</h3>')) || '';
+
+  assert.match(dayCampCard, /<img class="program-image" src="assets\/Daycamp\.jpg" alt="Young sailors participating in sailing day camp">/);
+  assert.doesNotMatch(dayCampCard, /program-image-placeholder/);
+});
+
+test('Intro to Sailing uses its course photo instead of a placeholder', () => {
+  const introCard = html.match(/<article class="program-card program-intro">[\s\S]*?<\/article>/)?.[0] || '';
+
+  assert.match(introCard, /<img class="program-image" src="assets\/Intro%20Daycamp\.jpg" alt="Young sailors learning the basics in Intro to Sailing">/);
+  assert.doesNotMatch(introCard, /program-image-placeholder/);
 });
 
 test('Keelboat Clinic uses its photo instead of a placeholder or slideshow slide', () => {
