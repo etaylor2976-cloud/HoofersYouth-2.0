@@ -15,6 +15,7 @@
   --white: #ffffff;
   --mist: #eaf0ee;
   --sand: #e9e0d1;
+  --edan-purple: #4a2a7e;
   --line: rgba(23, 57, 77, 0.14);
   --font-display: "Manrope", "Arial Black", sans-serif;
   --font-body: "DM Sans", Arial, sans-serif;
@@ -140,7 +141,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-discover { background: var(--seafoam); color: var(--navy); }
 .program-develop { background: var(--ink); color: var(--white); }
 .program-lead { background: var(--ink); color: var(--white); }
-.program-windsurf { background: var(--coral); color: var(--ink); }
+.program-windsurf { background: var(--edan-purple); color: var(--white); }
 .program-keelboat { background: var(--ocean); color: var(--white); }
 .program-intro { background: var(--sunny); color: var(--ink); }
 .program-image-placeholder { display: grid; width: calc(100% + (2 * var(--card-padding))); aspect-ratio: 16 / 9; margin: calc(-1 * var(--card-padding)) calc(-1 * var(--card-padding)) 1.75rem; place-items: center; border: 0; border-radius: 0; background: rgba(255,255,255,.22); }
