@@ -72,6 +72,13 @@ test('remaining routes identify their active page', () => {
   });
 });
 
+test('remaining routes omit the skip-to-content control', () => {
+  Object.values(routes).forEach((file) => {
+    const html = fs.readFileSync(file, 'utf8');
+    assert.doesNotMatch(html, /<a\b[^>]*class="[^"]*\bskip-link\b[^"]*"[^>]*>/i, file);
+  });
+});
+
 test('remaining routes expose only valid primary navigation', () => {
   const home = fs.readFileSync(routes.home, 'utf8');
   const contact = fs.readFileSync(routes.contact, 'utf8');
