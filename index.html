@@ -82,21 +82,15 @@
         <div class="program-tab-list" role="tablist" aria-label="Course schedule">
           <button id="morning-tab" role="tab" aria-selected="true" aria-controls="morning-courses" data-program-tab type="button">Morning</button>
           <button id="afternoon-tab" role="tab" aria-selected="false" aria-controls="afternoon-courses" data-program-tab type="button" tabindex="-1">Afternoon</button>
-          <button id="day-camp-tab" role="tab" aria-selected="false" aria-controls="day-camp-courses" data-program-tab type="button" tabindex="-1">Day Camp</button>
+          <button id="full-day-tab" role="tab" aria-selected="false" aria-controls="full-day-courses" data-program-tab type="button" tabindex="-1">Full-Day</button>
         </div>
 
         <div id="morning-courses" class="program-panel" role="tabpanel" aria-labelledby="morning-tab">
-          <div class="program-grid">
+          <div class="program-grid program-grid-two">
             <article class="program-card program-discover">
               <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 1</h3>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing</h3>
               <p>Learn the essentials of steering, sail trim, boat setup, and water safety in a friendly introduction to sailing.</p>
-              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
-            </article>
-            <article class="program-card program-develop">
-              <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 2</h3>
-              <p>Build stronger boat-handling skills, sail more independently, and take on new challenges across the lake.</p>
               <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
             </article>
             <article class="program-card program-windsurf">
@@ -109,27 +103,15 @@
         </div>
 
         <div id="afternoon-courses" class="program-panel" role="tabpanel" aria-labelledby="afternoon-tab" hidden>
-          <div class="program-grid">
+          <div class="program-grid program-grid-two">
             <article class="program-card program-discover">
               <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 1</h3>
+              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing</h3>
               <p>Learn the essentials of steering, sail trim, boat setup, and water safety in a friendly introduction to sailing.</p>
               <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
             </article>
-            <article class="program-card program-develop">
-              <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Sailing 2</h3>
-              <p>Build stronger boat-handling skills, sail more independently, and take on new challenges across the lake.</p>
-              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
-            </article>
-            <article class="program-card program-windsurf">
-              <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Windsurfing</h3>
-              <p>Practice balance and sail control, then catch the breeze for an energetic new way to move across the water.</p>
-              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
-            </article>
-            <article class="program-card program-windsurf">
-              <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
+            <article class="program-card program-keelboat">
+              <img class="program-image" src="assets/keelboat.jpg" alt="Young sailors aboard a keelboat">
               <p class="program-meta">Ages 10–17 · 2 weeks</p><h3>Keelboat Clinic</h3>
               <p>Learn the fundamentals of keelboat sailing, including boat handling, navigation, and safety protocols.</p>
               <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
@@ -137,11 +119,17 @@
           </div>
         </div>
 
-        <div id="day-camp-courses" class="program-panel" role="tabpanel" aria-labelledby="day-camp-tab" hidden>
-          <div class="program-grid program-grid-day-camp">
+        <div id="full-day-courses" class="program-panel" role="tabpanel" aria-labelledby="full-day-tab" hidden>
+          <div class="program-grid">
+            <article class="program-card program-intro">
+              <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
+              <p class="program-meta">Ages 10–17 · 1 week</p><h3>Intro to Sailing</h3>
+              <p>Get comfortable on the water while learning basic steering, sail control, boat setup, and essential safety skills.</p>
+              <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
+            </article>
             <article class="program-card program-discover">
               <div class="program-image-placeholder" aria-hidden="true"><span>Image placeholder</span></div>
-              <p class="program-meta">Ages 10–17 · 1 week</p><h3>Beginner Daycamp</h3>
+              <p class="program-meta">Ages 10–17 · 1 week</p><h3>Day Camp</h3>
               <p>Spend a full week learning sailing fundamentals through games, teamwork, and plenty of supported lake time.</p>
               <button type="button" data-camp-signup>Sign up for camp <span aria-hidden="true">→</span></button>
             </article>

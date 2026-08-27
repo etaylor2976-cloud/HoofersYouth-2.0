@@ -7,12 +7,6 @@
     "alt": "Youth sailing: The Tong Family Marina"
   },
   {
-    "src": "assets/slideshow/02-keelboat.jpg",
-    "title": "Keelboat Adventures",
-    "description": "Campers build confidence and teamwork while learning to sail together.",
-    "alt": "Youth sailing: Keelboat Adventures"
-  },
-  {
     "src": "assets/slideshow/IMG59930334353346700.jpg",
     "title": "Scow",
     "description": "The Scow is a fast and exciting sailboat that challenges more experienced campers to develop their sailing skills.",
