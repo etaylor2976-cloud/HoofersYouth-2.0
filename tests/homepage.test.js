@@ -75,43 +75,61 @@ test('homepage keeps Programs and FAQ as sections without deleted page links', (
   assert.match(html, /href="#programs"[^>]*>Explore programs/);
   assert.match(html, /href="#programs"[^>]*>Programs</);
   assert.match(html, /href="#faq"[^>]*>FAQ</);
-  assert.equal((html.match(/data-camp-signup/g) || []).length, 9);
-  assert.equal((html.match(/>Sign up for camp\s*</g) || []).length, 8);
+  assert.equal((html.match(/data-camp-signup/g) || []).length, 8);
+  assert.equal((html.match(/>Sign up for camp\s*</g) || []).length, 7);
   assert.doesNotMatch(html, /See all frequently asked questions/i);
   assert.doesNotMatch(html, /href="(?:programs|about|faq|login|signup)\//i);
 });
 
-test('programs section presents course selections in three accessible tabs', () => {
+test('programs section groups seven courses into Morning, Afternoon, and Full-Day tabs', () => {
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+  const morning = programs.match(/id="morning-courses"[\s\S]*?<\/div>\s*<\/div>/)?.[0] || '';
+  const afternoon = programs.match(/id="afternoon-courses"[\s\S]*?<\/div>\s*<\/div>/)?.[0] || '';
+  const fullDay = programs.match(/id="full-day-courses"[\s\S]*?<\/div>\s*<\/div>/)?.[0] || '';
 
   assert.match(programs, /role="tablist"[^>]+aria-label="Course schedule"/);
   assert.match(programs, /id="morning-tab"[^>]+role="tab"[^>]+aria-selected="true"[^>]+aria-controls="morning-courses"[^>]*>Morning</);
   assert.match(programs, /id="afternoon-tab"[^>]+role="tab"[^>]+aria-selected="false"[^>]+aria-controls="afternoon-courses"[^>]*>Afternoon</);
-  assert.match(programs, /id="day-camp-tab"[^>]+role="tab"[^>]+aria-selected="false"[^>]+aria-controls="day-camp-courses"[^>]*>Day Camp</);
+  assert.match(programs, /id="full-day-tab"[^>]+role="tab"[^>]+aria-selected="false"[^>]+aria-controls="full-day-courses"[^>]*>Full-Day</);
   assert.match(programs, /id="morning-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="morning-tab"/);
   assert.match(programs, /id="afternoon-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="afternoon-tab"[^>]+hidden/);
-  assert.match(programs, /id="day-camp-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="day-camp-tab"[^>]+hidden/);
-  assert.equal((programs.match(/<h3>Sailing 1<\/h3>/g) || []).length, 2);
-  assert.equal((programs.match(/<h3>Sailing 2<\/h3>/g) || []).length, 2);
-  assert.equal((programs.match(/<h3>Windsurfing<\/h3>/g) || []).length, 2);
-  assert.match(programs, /<h3>Beginner Daycamp<\/h3>/);
-  assert.match(programs, /<h3>Advanced Daycamp<\/h3>/);
-  assert.equal((programs.match(/Ages 10–17 · 2 weeks/g) || []).length, 6);
-  assert.equal((programs.match(/Ages 10–17 · 1 week/g) || []).length, 2);
-  assert.equal((programs.match(/class="program-card /g) || []).length, 8);
+  assert.match(programs, /id="full-day-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="full-day-tab"[^>]+hidden/);
+  assert.deepEqual([...morning.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing', 'Windsurfing']);
+  assert.deepEqual([...afternoon.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing', 'Keelboat Clinic']);
+  assert.deepEqual([...fullDay.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Intro to Sailing', 'Day Camp', 'Advanced Daycamp']);
+  assert.equal((programs.match(/Ages 10–17 · 2 weeks/g) || []).length, 4);
+  assert.equal((programs.match(/Ages 10–17 · 1 week/g) || []).length, 3);
+  assert.equal((programs.match(/class="program-card /g) || []).length, 7);
+  assert.equal((programs.match(/class="program-grid program-grid-two"/g) || []).length, 2);
+  const twoColumnRule = css.match(/\.program-grid-two\s*\{[^}]*\}/)?.[0] || '';
+  assert.match(twoColumnRule, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.doesNotMatch(twoColumnRule, /max-width/);
   assert.doesNotMatch(programs, /Ages 10-18/);
 });
 
 test('every course card reserves a labeled image placeholder instead of an icon', () => {
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 8);
-  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 8);
+  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 6);
+  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 6);
   assert.doesNotMatch(programs, /class="program-icon"/);
+});
+
+test('Keelboat Clinic uses its photo instead of a placeholder or slideshow slide', () => {
+  const keelboatCard = html.match(/<article class="program-card program-keelboat">[\s\S]*?<\/article>/)?.[0] || '';
+  const manifest = fs.readFileSync('js/slideshow-manifest.js', 'utf8');
+  const captions = fs.readFileSync('assets/slideshow/captions.json', 'utf8');
+
+  assert.match(keelboatCard, /<img class="program-image" src="assets\/keelboat\.jpg" alt="Young sailors aboard a keelboat">/);
+  assert.doesNotMatch(keelboatCard, /program-image-placeholder/);
+  assert.doesNotMatch(manifest, /keelboat\.jpg/i);
+  assert.doesNotMatch(captions, /keelboat\.jpg/i);
+  assert.equal(fs.existsSync('assets/slideshow/02-keelboat.jpg'), false);
 });
 
 test('course cards use a flush borderless image top without number labels', () => {
   const placeholderRule = css.match(/\.program-image-placeholder\s*\{[^}]*\}/)?.[0] || '';
+  const imageRule = css.match(/\.program-image\s*\{[^}]*\}/)?.[0] || '';
   const cardRule = css.match(/\.program-card\s*\{[^}]*\}/)?.[0] || '';
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
@@ -120,6 +138,8 @@ test('course cards use a flush borderless image top without number labels', () =
   assert.match(placeholderRule, /aspect-ratio:\s*16\s*\/\s*9/);
   assert.match(placeholderRule, /margin:\s*calc\(-1\s*\*\s*var\(--card-padding\)\)/);
   assert.match(placeholderRule, /border:\s*0/);
+  assert.match(imageRule, /object-fit:\s*cover/);
+  assert.match(imageRule, /max-width:\s*none/);
   assert.doesNotMatch(programs, /class="program-number"/);
   assert.doesNotMatch(css, /\.program-number/);
 });
@@ -144,17 +164,20 @@ test('course cards use the approved palette with readable text', () => {
   }
 
   assert.deepEqual(cardClasses, {
-    'Sailing 1': 'program-discover',
-    'Sailing 2': 'program-develop',
+    Sailing: 'program-discover',
     Windsurfing: 'program-windsurf',
-    'Beginner Daycamp': 'program-discover',
+    'Keelboat Clinic': 'program-keelboat',
+    'Intro to Sailing': 'program-intro',
+    'Day Camp': 'program-discover',
     'Advanced Daycamp': 'program-lead'
   });
 
   const palettes = {
     'program-discover': ['--seafoam', '--navy'],
     'program-develop': ['--ink', '--white'],
-    'program-windsurf': ['--sunny', '--ink'],
+    'program-windsurf': ['--coral', '--ink'],
+    'program-keelboat': ['--ocean', '--white'],
+    'program-intro': ['--sunny', '--ink'],
     'program-lead': ['--ink', '--white']
   };
 
