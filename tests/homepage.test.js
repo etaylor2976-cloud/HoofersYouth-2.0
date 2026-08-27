@@ -107,12 +107,18 @@ test('programs section groups seven courses into Morning, Afternoon, and Full-Da
   assert.doesNotMatch(programs, /Ages 10-18/);
 });
 
-test('every course card reserves a labeled image placeholder instead of an icon', () => {
-  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+test('Sailing PM uses its course photo instead of a placeholder', () => {
+  const sailingPmCard = html.match(/<article class="program-card program-discover">[\s\S]*?<\/article>/g)?.[1] || '';
 
-  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 2);
-  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 2);
-  assert.doesNotMatch(programs, /class="program-icon"/);
+  assert.match(sailingPmCard, /<img class="program-image" src="assets\/SailingPM\.jpg" alt="Young sailor learning to sail in the afternoon">/);
+  assert.doesNotMatch(sailingPmCard, /program-image-placeholder/);
+});
+
+test('Sailing AM uses its course photo instead of a placeholder', () => {
+  const sailingAmCard = html.match(/<article class="program-card program-discover">[\s\S]*?<\/article>/)?.[0] || '';
+
+  assert.match(sailingAmCard, /<img class="program-image" src="assets\/SailingAM\.jpg" alt="Young sailor learning to sail in the morning">/);
+  assert.doesNotMatch(sailingAmCard, /program-image-placeholder/);
 });
 
 test('Windsurfing uses its course photo instead of a placeholder', () => {
