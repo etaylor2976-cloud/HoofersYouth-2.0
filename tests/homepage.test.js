@@ -94,17 +94,74 @@ test('programs section groups seven courses into Morning, Afternoon, and Full-Da
   assert.match(programs, /id="morning-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="morning-tab"/);
   assert.match(programs, /id="afternoon-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="afternoon-tab"[^>]+hidden/);
   assert.match(programs, /id="full-day-courses"[^>]+role="tabpanel"[^>]+aria-labelledby="full-day-tab"[^>]+hidden/);
-  assert.deepEqual([...morning.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing', 'Windsurfing']);
-  assert.deepEqual([...afternoon.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing', 'Keelboat Clinic']);
-  assert.deepEqual([...fullDay.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Intro to Sailing', 'Day Camp', 'Advanced Daycamp']);
-  assert.equal((programs.match(/Ages 10–17 · 2 weeks/g) || []).length, 4);
-  assert.equal((programs.match(/Ages 10–17 · 1 week/g) || []).length, 3);
+  assert.deepEqual([...morning.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing AM', 'Windsurfing']);
+  assert.deepEqual([...afternoon.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Sailing PM', 'Keelboat Clinic']);
+  assert.deepEqual([...fullDay.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) => match[1]), ['Intro to Sailing', 'Sailing Day Camp', 'Advanced Day Camp']);
+  assert.equal((programs.match(/<span>Ages 10–17<\/span>/g) || []).length, 7);
+  assert.equal((programs.match(/<span>2 weeks<\/span>/g) || []).length, 4);
+  assert.equal((programs.match(/<span>1 week<\/span>/g) || []).length, 3);
   assert.equal((programs.match(/class="program-card /g) || []).length, 7);
   assert.equal((programs.match(/class="program-grid program-grid-two"/g) || []).length, 2);
   const twoColumnRule = css.match(/\.program-grid-two\s*\{[^}]*\}/)?.[0] || '';
   assert.match(twoColumnRule, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.doesNotMatch(twoColumnRule, /max-width/);
   assert.doesNotMatch(programs, /Ages 10-18/);
+});
+
+test('every course card displays its price and scheduled time', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+  const cards = [...programs.matchAll(/<article class="program-card [^"]+">[\s\S]*?<\/article>/g)].map((match) => match[0]);
+  const expectedTimes = {
+    'Sailing AM': '9:30 AM–12:30 PM',
+    Windsurfing: '9:30 AM–12:30 PM',
+    'Sailing PM': '1:30 PM–4:30 PM',
+    'Keelboat Clinic': '1:30 PM–4:30 PM',
+    'Intro to Sailing': '10:00 AM–4:00 PM',
+    'Sailing Day Camp': '10:00 AM–4:00 PM',
+    'Advanced Day Camp': '10:00 AM–4:00 PM'
+  };
+
+  assert.equal(cards.length, 7);
+  for (const [title, time] of Object.entries(expectedTimes)) {
+    const card = cards.find((candidate) => candidate.includes(`<h3>${title}</h3>`)) || '';
+    const duration = ['Sailing AM', 'Windsurfing', 'Sailing PM', 'Keelboat Clinic'].includes(title) ? '2 weeks' : '1 week';
+    assert.match(card, new RegExp(`<p class="program-meta"><span>Ages 10–17<\\/span><span>${duration}<\\/span><span>\\$500<\\/span><span>${time}<\\/span><\\/p>`));
+  }
+
+  assert.doesNotMatch(programs, /class="program-details"/);
+  assert.doesNotMatch(css, /\.program-details/);
+  assert.match(css, /\.program-meta\s*\{[^}]*display:\s*flex[^}]*flex-wrap:\s*nowrap/s);
+  assert.match(css, /\.program-meta span\s*\{[^}]*border-radius:\s*999px[^}]*white-space:\s*nowrap/s);
+});
+
+test('every course card has collapsible details and an always-visible signup button', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+  const cards = [...programs.matchAll(/<article class="program-card [^"]+">[\s\S]*?<\/article>/g)].map((match) => match[0]);
+
+  assert.equal(cards.length, 7);
+  for (const card of cards) {
+    assert.match(card, /<details class="program-more">[\s\S]*?<summary>See more<\/summary>[\s\S]*?<h4>Learning objectives:<\/h4>\s*<ul>[\s\S]*?<\/ul>[\s\S]*?<\/details>/);
+    assert.equal((card.match(/<li>[^<]+<\/li>/g) || []).length, 3);
+    assert.match(card, /<button class="program-signup" type="button" data-camp-signup>Sign up for camp<\/button>/);
+    assert.doesNotMatch(card, /Sign up for camp[\s\S]*?aria-hidden="true"/);
+  }
+
+  assert.doesNotMatch(css, /\.program-card > button[^}]*text-decoration:\s*underline/s);
+  assert.match(css, /\.program-more h4\s*\{[^}]*font-size:/s);
+  assert.match(css, /\.program-signup\s*\{[^}]*background:\s*var\(--white\)[^}]*color:\s*var\(--navy\)/s);
+});
+
+test('every course card shows a prerequisite disclaimer below its title', () => {
+  const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
+  const cards = [...programs.matchAll(/<article class="program-card [^"]+">[\s\S]*?<\/article>/g)].map((match) => match[0]);
+
+  assert.equal(cards.length, 7);
+  for (const card of cards) {
+    assert.match(card, /<h3>[^<]+<\/h3>\s*<p class="program-prerequisite"><strong>Prerequisites:<\/strong> Course-specific requirements coming soon\.<\/p>\s*<p>/);
+  }
+
+  assert.match(css, /\.program-prerequisite\s*\{[^}]*font-size:/s);
+  assert.match(css, /\.program-card > p:not\(\.program-meta\):not\(\.program-prerequisite\)/);
 });
 
 test('Sailing PM uses its course photo instead of a placeholder', () => {
@@ -200,18 +257,19 @@ test('course cards use the approved palette with readable text', () => {
   }
 
   assert.deepEqual(cardClasses, {
-    Sailing: 'program-discover',
+    'Sailing AM': 'program-discover',
+    'Sailing PM': 'program-discover',
     Windsurfing: 'program-windsurf',
     'Keelboat Clinic': 'program-keelboat',
     'Intro to Sailing': 'program-intro',
-    'Day Camp': 'program-discover',
-    'Advanced Daycamp': 'program-lead'
+    'Sailing Day Camp': 'program-discover',
+    'Advanced Day Camp': 'program-lead'
   });
 
   const palettes = {
     'program-discover': ['--seafoam', '--navy'],
     'program-develop': ['--ink', '--white'],
-    'program-windsurf': ['--coral', '--ink'],
+    'program-windsurf': ['--edan-purple', '--white'],
     'program-keelboat': ['--ocean', '--white'],
     'program-intro': ['--sunny', '--ink'],
     'program-lead': ['--ink', '--white']
