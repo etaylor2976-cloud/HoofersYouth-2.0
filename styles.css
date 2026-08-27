@@ -83,7 +83,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .hero {
   position: relative; display: grid; grid-template-columns: minmax(0, 43rem); align-items: center;
   min-height: calc(100vh - 5.25rem); padding: clamp(3.5rem, 7vw, 7.5rem) clamp(1.25rem, 7vw, 7.5rem) clamp(4rem, 7vw, 6.5rem);
-  background: linear-gradient(90deg, rgba(11, 53, 88, .76) 0%, rgba(25, 127, 143, .52) 48%, rgba(245, 189, 79, .08) 100%), url("assets/Techs.jpg") center 58% / cover no-repeat;
+  background: linear-gradient(90deg, rgba(11, 53, 88, .76) 0%, rgba(25, 127, 143, .52) 48%, rgba(245, 189, 79, .08) 100%), url("assets/HeroBanner.jpg") center 67% / cover no-repeat;
 }
 .hero-copy { position: relative; z-index: 2; max-width: 43rem; }
 .hero-copy .eyebrow { display: flex; align-items: center; gap: .7rem; }
@@ -150,7 +150,7 @@ section[id] { scroll-margin-top: 5.5rem; }
 .confidence { display: grid; grid-template-columns: minmax(20rem, .9fr) minmax(26rem, 1.1fr); gap: clamp(3rem, 8vw, 8rem); align-items: center; background: var(--navy-deep); color: var(--white); }
 .confidence-visual { position: relative; min-height: 43rem; }
 .confidence-image { position: absolute; inset: 0; overflow: hidden; border: .4rem solid var(--white); border-radius: 2rem 5rem 2rem 2rem; background-color: var(--ocean); box-shadow: var(--shadow); }
-.confidence-image::before { content: ""; position: absolute; inset: -6%; background: url("assets/Youth_Sailing1.jpg") center / cover no-repeat; }
+.confidence-image::before { content: ""; position: absolute; inset: -6%; background: url("assets/Instruction_1.jpg") 68% center / cover no-repeat; }
 .confidence-note { position: absolute; right: -2rem; bottom: 1.5rem; padding: 1rem 1.35rem; border: .25rem solid var(--navy-deep); border-radius: var(--radius-sm); background: var(--sand); color: var(--navy); font-size: .8rem; transform: rotate(1deg); }
 .confidence-note strong { font-family: var(--font-display); font-size: 1.15rem; }
 .confidence-copy .eyebrow { color: var(--sunny); }
@@ -242,7 +242,7 @@ section[id] { scroll-margin-top: 5.5rem; }
   .primary-nav.is-open { display: flex; flex-direction: column; }
   .primary-nav > a:not(.button) { min-height: 3rem; padding: .75rem; }
   .primary-nav .button { margin-top: .5rem; }
-  .hero { grid-template-columns: 1fr; min-height: auto; padding: 4rem 1.25rem 3rem; background-position: center, 62% center; }
+  .hero { grid-template-columns: 1fr; min-height: auto; padding: 4rem 1.25rem 3rem; background-position: center, 70% center; }
   .hero-copy { max-width: none; }
   .hero h1 { font-size: clamp(3.4rem, 16vw, 5.6rem); }
   .trust-list { margin-top: 2.5rem; }
@@ -257,6 +257,7 @@ section[id] { scroll-margin-top: 5.5rem; }
   .program-card { min-height: 25rem; }
   .confidence { grid-template-columns: 1fr; gap: 4rem; }
   .confidence-visual { min-height: 30rem; }
+  .confidence-image::before { background-position: 72% center; }
   .confidence-note { right: -.4rem; }
   .slideshow-viewport { aspect-ratio: 4 / 3; border-radius: 2rem 4rem 2rem 2rem; }
   .slideshow-slide figcaption { right: 1rem; bottom: 1rem; left: 1rem; }
