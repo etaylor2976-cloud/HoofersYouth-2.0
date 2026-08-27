@@ -110,9 +110,16 @@ test('programs section groups seven courses into Morning, Afternoon, and Full-Da
 test('every course card reserves a labeled image placeholder instead of an icon', () => {
   const programs = html.match(/<section id="programs"[\s\S]*?<\/section>/)?.[0] || '';
 
-  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 6);
-  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 6);
+  assert.equal((programs.match(/class="program-image-placeholder"/g) || []).length, 5);
+  assert.equal((programs.match(/>Image placeholder<\/span>/g) || []).length, 5);
   assert.doesNotMatch(programs, /class="program-icon"/);
+});
+
+test('Windsurfing uses its course photo instead of a placeholder', () => {
+  const windsurfingCard = html.match(/<article class="program-card program-windsurf">[\s\S]*?<\/article>/)?.[0] || '';
+
+  assert.match(windsurfingCard, /<img class="program-image" src="assets\/windsurfing\.jpg" alt="Young sailor windsurfing on the lake">/);
+  assert.doesNotMatch(windsurfingCard, /program-image-placeholder/);
 });
 
 test('Keelboat Clinic uses its photo instead of a placeholder or slideshow slide', () => {
