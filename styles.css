@@ -174,11 +174,11 @@ section[id] { scroll-margin-top: 5.5rem; }
 .gallery-heading { max-width: 85rem; margin: 0 auto 3.5rem; text-align: center; }
 .gallery-heading h2 { margin-bottom: 0; color: var(--navy); }
 .slideshow { max-width: 85rem; margin: 0 auto; }
-.slideshow-viewport { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border: .5rem solid var(--white); border-radius: 1.5rem 4.5rem 1.5rem 1.5rem; background: var(--ocean); box-shadow: var(--shadow-soft); }
-.slideshow-slide { position: absolute; inset: 0; margin: 0; }
+.slideshow-viewport { position: relative; overflow: hidden; border: .5rem solid var(--white); border-radius: 1.5rem 4.5rem 1.5rem 1.5rem; background: var(--ocean); box-shadow: var(--shadow-soft); }
+.slideshow-slide { position: relative; margin: 0; }
 .slideshow-slide[hidden] { display: none; }
-.slideshow-slide img { width: 100%; height: 100%; object-fit: cover; }
-.slideshow-slide figcaption { position: absolute; right: 1.5rem; bottom: 1.5rem; left: 1.5rem; padding: 1rem 1.2rem; border: 1px solid rgba(252,252,250,.12); border-radius: var(--radius-sm); background: rgba(13,40,55,.84); color: var(--white); font-family: var(--font-display); font-weight: 700; backdrop-filter: blur(8px); }
+.slideshow-slide img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.slideshow-slide figcaption { position: static; padding: 1rem 1.2rem; background: rgba(13,40,55,.84); color: var(--white); font-family: var(--font-display); font-weight: 700; }
 .slideshow-caption-title { display: block; font-size: 1.05rem; }
 .slideshow-caption-description { display: block; margin-top: .3rem; font-family: var(--font-body); font-size: .88rem; font-weight: 500; line-height: 1.4; }
 .slideshow-controls { display: grid; grid-template-columns: auto 1fr auto auto; gap: 1rem; align-items: center; margin-top: 1.25rem; }
@@ -272,8 +272,8 @@ section[id] { scroll-margin-top: 5.5rem; }
   .confidence-visual { min-height: 30rem; }
   .confidence-image::before { background-position: 72% center; }
   .confidence-note { right: -.4rem; }
-  .slideshow-viewport { aspect-ratio: 4 / 3; border-radius: 2rem 4rem 2rem 2rem; }
-  .slideshow-slide figcaption { right: 1rem; bottom: 1rem; left: 1rem; }
+  .slideshow-viewport { border-radius: 2rem 4rem 2rem 2rem; }
+  .slideshow-slide img { aspect-ratio: 4 / 3; }
   .slideshow-controls { grid-template-columns: auto 1fr auto; }
   .slideshow-status { grid-column: 1 / -1; grid-row: 2; text-align: center; }
   .slideshow-control { min-width: 3rem; min-height: 3rem; }

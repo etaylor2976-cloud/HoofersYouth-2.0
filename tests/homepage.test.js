@@ -355,12 +355,18 @@ test('homepage gallery exposes one accessible manual slideshow shell', () => {
 
 test('stylesheet replaces the mosaic with a responsive framed slideshow', () => {
   assert.match(css, /\.slideshow\s*\{[^}]*max-width:\s*85rem/s);
-  assert.match(css, /\.slideshow-viewport\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*border:\s*\.5rem solid var\(--white\)/s);
+  assert.match(css, /\.slideshow-viewport\s*\{[^}]*border:\s*\.5rem solid var\(--white\)/s);
+  assert.match(css, /\.slideshow-slide img\s*\{[^}]*aspect-ratio:\s*16\s*\/\s*9[^}]*object-fit:\s*cover/s);
+  assert.match(css, /\.slideshow-slide figcaption\s*\{[^}]*position:\s*static[^}]*background:\s*rgba\(13,40,55,\.84\)/s);
+  assert.doesNotMatch(css.match(/\.slideshow-slide figcaption\s*\{[^}]*\}/)?.[0] || '', /bottom:|left:|right:/);
   assert.match(css, /\.slideshow-caption-title\s*\{[^}]*display:\s*block/s);
   assert.match(css, /\.slideshow-caption-description\s*\{[^}]*display:\s*block/s);
   assert.match(css, /\.slideshow-control/);
   assert.match(css, /\.slideshow-indicator\[aria-current="true"\]/);
   assert.doesNotMatch(css, /\.gallery-grid|\.gallery-one|\.gallery-two|\.gallery-three/);
+
+  const mobileLayout = css.match(/@media\s*\(max-width:\s*48rem\)\s*\{[\s\S]*?\/\* Contact form \*\//)?.[0] || '';
+  assert.match(mobileLayout, /\.slideshow-slide img\s*\{[^}]*aspect-ratio:\s*4\s*\/\s*3/s);
 });
 
 test('newsletter banner keeps the blue hero seam and responsive inline form', () => {
