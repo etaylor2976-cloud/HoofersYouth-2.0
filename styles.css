@@ -123,9 +123,13 @@ section[id] { scroll-margin-top: 5.5rem; }
 .section-heading > p { margin-bottom: .6rem; color: #61747d; font-size: 1.02rem; }
 .programs { background: var(--cream); }
 .program-tabs { max-width: 85rem; margin: 0 auto; }
-.program-tab-list { display: inline-flex; gap: .35rem; padding: .4rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); box-shadow: var(--shadow-soft); }
-.program-tab-list button { min-width: 8.5rem; padding: .85rem 1.4rem; border: 0; border-radius: 999px; background: transparent; color: var(--navy); cursor: pointer; font: inherit; font-size: .82rem; font-weight: 800; letter-spacing: .04em; }
-.program-tab-list button[aria-selected="true"] { background: var(--navy); color: var(--white); }
+.program-tabs-label { margin: 0 0 .65rem; color: var(--navy); font-family: var(--font-display); font-size: .82rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.program-tab-list { display: flex; gap: .35rem; width: fit-content; max-width: 100%; padding: .4rem; border: 2px solid var(--navy); border-radius: 1rem; background: var(--white); box-shadow: 0 .7rem 1.5rem rgba(13, 40, 55, .12); }
+.program-tab-list button { min-width: 8.5rem; min-height: 3.25rem; padding: .85rem 1.4rem; border: 2px solid transparent; border-radius: .65rem; background: transparent; color: var(--navy); cursor: pointer; font: inherit; font-size: .88rem; font-weight: 800; letter-spacing: .04em; transition: background .1s ease, color .1s ease, border-color .1s ease, transform .1s ease; }
+.program-tab-list button:hover { border-color: var(--ocean); background: var(--seafoam); }
+.program-tab-list button[aria-selected="true"] { background: var(--navy); color: var(--white); box-shadow: 0 .35rem .75rem rgba(13, 40, 55, .2); }
+.program-tab-list button[aria-selected="true"]:hover { border-color: var(--navy); background: var(--navy-deep); }
+.program-tab-list button:focus-visible { outline-offset: 2px; }
 .program-panel { margin-top: 2rem; }
 .program-panel[hidden] { display: none; }
 .program-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 85rem; margin: 0 auto; }
