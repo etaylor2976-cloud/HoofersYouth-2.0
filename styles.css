@@ -50,15 +50,13 @@ section[id] { scroll-margin-top: 5.5rem; }
 
 .site-header {
   position: sticky; z-index: 50; top: 0; display: flex; align-items: center; justify-content: space-between;
-  min-height: 5.25rem; padding: .8rem clamp(1.25rem, 5vw, 5.5rem); border-bottom: 1px solid var(--line);
+  min-height: 4.8rem; padding: .6rem clamp(1.25rem, 5vw, 5.5rem); border-bottom: 1px solid var(--line);
   background: var(--cream); box-shadow: 0 .25rem 1.25rem rgba(13, 40, 55, .04); backdrop-filter: blur(18px);
 }
-.brand { display: inline-flex; align-items: center; gap: .75rem; color: var(--navy); text-decoration: none; }
-.brand-mark { position: relative; display: grid; width: 2.75rem; height: 2.75rem; place-items: center; overflow: hidden; border-radius: 50%; background: var(--navy); }
-.brand-mark::before { content: ""; position: absolute; width: 1.5rem; height: 1.8rem; bottom: .65rem; background: var(--white); clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.brand-mark span { position: absolute; bottom: .52rem; width: 2.1rem; height: .38rem; border-radius: 50%; border-top: 2px solid var(--sunny); }
-.brand-copy { font-family: var(--font-display); font-size: 1.05rem; font-weight: 800; line-height: .95; letter-spacing: -.04em; text-transform: uppercase; }
-.brand-copy small { display: block; margin-top: .28rem; color: var(--ocean); font-family: var(--font-body); font-size: .56rem; letter-spacing: .13em; }
+.brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--navy); text-decoration: none; line-height: 1; }
+.brand-mark { display: block; width: 4rem; height: 4rem; object-fit: contain; padding: 0; background: transparent; border-radius: 0; box-shadow: none; }
+.brand-copy { display: flex; flex-direction: column; justify-content: center; font-family: var(--font-display); font-size: 1.18rem; font-weight: 800; line-height: .95; letter-spacing: -.04em; text-transform: uppercase; }
+.brand-copy small { display: block; margin-top: .32rem; color: var(--ocean); font-family: var(--font-body); font-size: .6rem; letter-spacing: .13em; }
 .primary-nav { display: flex; align-items: center; gap: clamp(1.25rem, 2.5vw, 2.5rem); }
 .primary-nav > a:not(.button), .site-footer nav a { font-size: .85rem; font-weight: 600; text-decoration: none; }
 .primary-nav > a:not(.button)::after, .site-footer nav a::after { content: ""; display: block; width: 0; height: 2px; margin-top: 2px; background: var(--ocean); transition: width .2s ease; }
@@ -160,12 +158,11 @@ section[id] { scroll-margin-top: 5.5rem; }
 .program-signup { position: relative; z-index: 2; align-self: flex-start; margin-top: auto; padding: .7rem 1rem; border: 2px solid var(--navy); border-radius: 999px; background: var(--white); color: var(--navy); cursor: pointer; font: inherit; font-size: .82rem; font-weight: 800; text-decoration: none; }
 .program-signup:hover { background: var(--cream); }
 
-.confidence { display: grid; grid-template-columns: minmax(20rem, .9fr) minmax(26rem, 1.1fr); gap: clamp(3rem, 8vw, 8rem); align-items: center; background: var(--navy-deep); color: var(--white); }
-.confidence-visual { position: relative; min-height: 43rem; }
-.confidence-image { position: absolute; inset: 0; overflow: hidden; border: .4rem solid var(--white); border-radius: 2rem 5rem 2rem 2rem; background-color: var(--ocean); box-shadow: var(--shadow); }
+.confidence { display: grid; grid-template-columns: minmax(22rem, 1.15fr) minmax(22rem, .85fr); gap: clamp(2.5rem, 5vw, 6rem); align-items: center; background: var(--navy-deep); color: var(--white); }
+.confidence-visual { position: relative; width: min(100%, 52rem); min-height: 43rem; margin-left: auto; }
+.confidence-image { position: absolute; inset: 0; right: -1.5rem; width: calc(100% + 2rem); overflow: hidden; border: .4rem solid var(--white); border-radius: 2rem 5rem 2rem 2rem; background-color: var(--ocean); box-shadow: var(--shadow); }
 .confidence-image::before { content: ""; position: absolute; inset: -6%; background: url("assets/Instruction_1.jpg") 68% center / cover no-repeat; }
-.confidence-note { position: absolute; right: -2rem; bottom: 1.5rem; padding: 1rem 1.35rem; border: .25rem solid var(--navy-deep); border-radius: var(--radius-sm); background: var(--sand); color: var(--navy); font-size: .8rem; transform: rotate(1deg); }
-.confidence-note strong { font-family: var(--font-display); font-size: 1.15rem; }
+.confidence-copy { max-width: 32rem; }
 .confidence-copy .eyebrow { color: var(--sunny); }
 .confidence-copy h2 { max-width: 11ch; margin-bottom: 1.5rem; }
 .confidence-copy > p:not(.eyebrow) { max-width: 40rem; color: #d4e0e2; font-size: 1.06rem; }

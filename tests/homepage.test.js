@@ -331,6 +331,15 @@ test('confidence section uses the supplied Youth Sailing photograph', () => {
   assert.doesNotMatch(css, /\.confidence-visual::before\s*\{/);
 });
 
+test('confidence visual drops the promo bubble and uses a wider framed image', () => {
+  const confidence = html.match(/<section id="why-sailing"[\s\S]*?<\/section>/)?.[0] || '';
+
+  assert.doesNotMatch(confidence, /confidence-note|Small crews\.|Big growth\./i);
+  assert.doesNotMatch(css, /\.confidence-note\s*\{/);
+  assert.match(css, /\.confidence-visual\s*\{[^}]*max-width:\s*52rem/s);
+  assert.match(css, /\.confidence-image\s*\{[^}]*width:\s*calc\(100%\s*\+\s*2rem\)/s);
+});
+
 test('confidence section introduces the club in one paragraph', () => {
   const confidence = html.match(/<section id="why-sailing"[\s\S]*?<\/section>/)?.[0] || '';
 
